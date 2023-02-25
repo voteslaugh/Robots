@@ -2,17 +2,10 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import log.Logger;
 
@@ -29,7 +22,7 @@ public class MainApplicationFrame extends JFrame
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
-        int inset = 50;        
+        int inset = 100;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
             screenSize.width  - inset*2,
@@ -66,77 +59,20 @@ public class MainApplicationFrame extends JFrame
         frame.setVisible(true);
     }
     
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-// 
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-// 
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        return menuBar;
-//    }
-    
-    private JMenuBar generateMenuBar()
+    private MenuBar generateMenuBar()
     {
-        JMenuBar menuBar = new JMenuBar();
-        
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "Управление режимом отображения приложения");
-        
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
+        MenuBar menuBar = new MenuBar();
 
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
+        Menu lookAndFeel = new Menu("Режим отображения", KeyEvent.VK_V, "Управление режимом отображения приложения");
+        MenuItem systemLookAndFeel = new MenuItem("Системная схема", KeyEvent.VK_S, UIManager.getSystemLookAndFeelClassName(), null);
+        MenuItem crossplatformLookAndFeel = new MenuItem("Универсальная схема", KeyEvent.VK_S, UIManager.getCrossPlatformLookAndFeelClassName(), null);
+        lookAndFeel.addMenuItems(systemLookAndFeel, crossplatformLookAndFeel);
 
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription(
-                "Тестовые команды");
-        
-        {
-            JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
-            });
-            testMenu.add(addLogMessageItem);
-        }
-
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
+        Menu test = new Menu("Тесты", KeyEvent.VK_T, "Тестовые команды");
+        MenuItem addLogMessageItem = new MenuItem("Сообщение в лог", KeyEvent.VK_S, null, "Новая строка");
+        test.addMenuItems(addLogMessageItem);
+        menuBar.addMenus(lookAndFeel, test);
+        menuBar.add(test);
         return menuBar;
     }
     
