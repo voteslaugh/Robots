@@ -5,8 +5,8 @@ import log.Logger;
 import javax.swing.*;
 
 public class MenuItem extends JMenuItem {
-    public MenuItem(String text, int mnemonic, String className, String debugText) {
-        super(text, mnemonic);
+    public MenuItem(String title, int mnemonic, String className, String debugText) {
+        super(title, mnemonic);
         addActionListener((event) -> {
             if (className != null)
                 setLookAndFeel(className);
