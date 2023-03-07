@@ -2,15 +2,8 @@ package log;
 
 public final class Logger
 {
-    private static final LogWindowSource defaultLogSource;
-    static {
-        defaultLogSource = new LogWindowSource(100);
-    }
+    private static final LogWindowSource defaultLogSource = new LogWindowSource(100);
     
-    private Logger()
-    {
-    }
-
     public static void debug(String strMessage)
     {
         defaultLogSource.append(LogLevel.Debug, strMessage);
