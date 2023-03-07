@@ -3,15 +3,16 @@ package logic;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+import log.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class LogTextVisualizer extends JPanel implements LogChangeListener {
+public class LogVisualizer extends JPanel implements LogChangeListener {
     private LogWindowSource logSource;
     private TextArea logContent;
 
-    public LogTextVisualizer(LogWindowSource logSource) {
+    public LogVisualizer(LogWindowSource logSource) {
         this.logSource = logSource;
         this.logSource.registerListener(this);
         logContent = new TextArea();
@@ -19,6 +20,7 @@ public class LogTextVisualizer extends JPanel implements LogChangeListener {
         logContent.setMaximumSize(new Dimension(250, 900));
         updateLogContent();
         add(logContent);
+        Logger.debug("Протокол работает");
     }
     private void updateLogContent()
     {

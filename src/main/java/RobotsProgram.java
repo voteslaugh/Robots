@@ -2,7 +2,7 @@ import gui.InternalFrame;
 import gui.MainApplicationFrame;
 import log.Logger;
 import logic.GameVisualizer;
-import logic.LogTextVisualizer;
+import logic.LogVisualizer;
 
 import java.awt.*;
 
@@ -17,8 +17,7 @@ public class RobotsProgram
         e.printStackTrace();
       }
         InternalFrame logWindow = new InternalFrame("Протокол работы", 300, 800, 10, 10, false, false);
-        logWindow.addPanel(new LogTextVisualizer(Logger.getDefaultLogSource()));
-        Logger.debug("Протокол работает");
+        logWindow.addPanel(new LogVisualizer(Logger.getDefaultLogSource()));
 
         InternalFrame gameWindow = new InternalFrame("Игровое поле", 400, 400, 400, 400, true, true);
         gameWindow.addPanel(new GameVisualizer());
