@@ -41,7 +41,7 @@ public class LogWindowSource
         synchronized(listeners)
         {
             listeners.remove(listener);
-            activeListeners = null;
+            activeListeners = listeners.toArray(new LogChangeListener[0]);
         }
     }
     

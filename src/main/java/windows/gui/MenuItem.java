@@ -1,4 +1,4 @@
-package gui;
+package windows.gui;
 
 import log.Logger;
 

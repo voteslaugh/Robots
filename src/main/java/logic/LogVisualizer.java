@@ -32,6 +32,10 @@ public class LogVisualizer extends JPanel implements LogChangeListener {
         logContent.setText(content.toString());
         logContent.invalidate();
     }
+
+    public LogWindowSource getLogSource() {
+        return logSource;
+    }
     @Override
     public void onLogChanged() {
         EventQueue.invokeLater(this::updateLogContent);
