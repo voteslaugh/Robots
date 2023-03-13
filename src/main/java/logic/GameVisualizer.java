@@ -1,7 +1,6 @@
 package logic;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,7 +21,7 @@ public class GameVisualizer extends JPanel
     private volatile Point targetPosition = new Point(150, 100);
 
     private static final double MAX_VELOCITY = 0.1;
-    private static final double MAX_ANGULAR_VELOCITY = 0.001;
+    private static final double MAX_ANGULAR_VELOCITY = 0.01;
 
     private double distanceToTarget;
     private double angleToTarget;
@@ -47,7 +46,7 @@ public class GameVisualizer extends JPanel
     }
 
     protected void onRedrawEvent() {
-        EventQueue.invokeLater(this::repaint);
+        repaint();
     }
 
 
@@ -59,33 +58,31 @@ public class GameVisualizer extends JPanel
     protected void onModelUpdateEvent()
     {
         distanceToTarget = targetPosition.distance(robotPosition);
-        if (distanceToTarget >= 0.5) {
-            double velocity = MAX_VELOCITY;
-            double angularVelocity;
-            angleToTarget = angleBetweenPoints(targetPosition, robotPosition);
-            double angle = asNormalizedRadians(angleToTarget - robotDirection);
-            if (angle > Math.PI)
-                angularVelocity = MAX_ANGULAR_VELOCITY;
-            else
-                angularVelocity = -MAX_ANGULAR_VELOCITY;
-
-            if (Math.abs(angle) >= 0.1)
-                velocity = distanceToTarget * Math.abs(angularVelocity) / 2;
-
-
-            moveRobot(velocity, angularVelocity, 10);
+        double velocity = MAX_VELOCITY;
+        double angularVelocity;
+        angleToTarget = angleBetweenPoints(targetPosition, robotPosition);
+        double angle = asNormalizedRadians(angleToTarget - robotDirection);
+        if (Math.abs(angle) < 0.05) {
+            angularVelocity = 0;
+        } else if (angle > Math.PI) {
+            angularVelocity = MAX_ANGULAR_VELOCITY;
+        } else {
+            angularVelocity = -MAX_ANGULAR_VELOCITY;
         }
-    }
-    
+
+
+        if (Math.abs(angle) >= 0.1)
+            velocity = distanceToTarget * Math.abs(angularVelocity) / 2;
+
+
+        moveRobot(velocity, angularVelocity, 10);
+        }
+
     private static double applyLimits(double value, double min, double max)
     {
-        if (value < min)
-            return min;
-        else if (value > max)
-            return max;
-        return value;
+        return Math.min(Math.max(value, min), max);
     }
-    
+
     private void moveRobot(double velocity, double angularVelocity, double duration)
     {
         velocity = applyLimits(velocity, 0, MAX_VELOCITY);
@@ -110,13 +107,9 @@ public class GameVisualizer extends JPanel
 
     private static double asNormalizedRadians(double angle)
     {
-        while (angle < 0)
-        {
+        angle %= 2*Math.PI;
+        if (angle < 0) {
             angle += 2*Math.PI;
-        }
-        while (angle >= 2*Math.PI)
-        {
-            angle -= 2*Math.PI;
         }
         return angle;
     }
