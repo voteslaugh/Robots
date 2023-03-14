@@ -1,6 +1,6 @@
-package windows.gui;
+package robot.windows.gui;
 
-import log.Logger;
+import robot.log.Logger;
 
 import javax.swing.*;
 

@@ -1,16 +1,17 @@
-package windows;
+package robot.windows;
 
-import log.Logger;
-import logic.LogVisualizer;
-import windows.gui.InternalFrame;
+import robot.log.Logger;
+import robot.logic.LogVisualizer;
+import robot.windows.gui.InternalFrame;
 
 
 public class LogWindow extends InternalFrame {
     LogVisualizer logVisualizer = new LogVisualizer(Logger.getDefaultLogSource());
 
     public LogWindow() {
-        super("Протокол работы", 300, 800, 10, 10, false, false);
+        super("Протокол работы", 200, 400, 0, 0, false, false);
         addPanel(logVisualizer);
+        pack();
     }
 
     @Override

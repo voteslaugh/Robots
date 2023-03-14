@@ -1,4 +1,4 @@
-package logic;
+package robot.logic;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -62,9 +62,7 @@ public class GameVisualizer extends JPanel
         double angularVelocity;
         angleToTarget = angleBetweenPoints(targetPosition, robotPosition);
         double angle = asNormalizedRadians(angleToTarget - robotDirection);
-        if (Math.abs(angle) < 0.05) {
-            angularVelocity = 0;
-        } else if (angle > Math.PI) {
+        if (angle > Math.PI) {
             angularVelocity = MAX_ANGULAR_VELOCITY;
         } else {
             angularVelocity = -MAX_ANGULAR_VELOCITY;
@@ -75,7 +73,7 @@ public class GameVisualizer extends JPanel
             velocity = distanceToTarget * Math.abs(angularVelocity) / 2;
 
 
-        moveRobot(velocity, angularVelocity, 10);
+        moveRobot(velocity, angularVelocity, 20);
         }
 
     private static double applyLimits(double value, double min, double max)

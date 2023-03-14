@@ -1,4 +1,4 @@
-package windows.gui;
+package robot.windows.gui;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,9 +1,9 @@
-package logic;
+package robot.logic;
 
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
-import log.Logger;
+import robot.log.LogChangeListener;
+import robot.log.LogEntry;
+import robot.log.LogWindowSource;
+import robot.log.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +16,8 @@ public class LogVisualizer extends JPanel implements LogChangeListener {
         this.logSource = logSource;
         this.logSource.registerListener(this);
         logContent = new TextArea();
-        logContent.setPreferredSize(new Dimension(250, 900));
-        logContent.setMaximumSize(new Dimension(250, 900));
+        logContent.setPreferredSize(new Dimension(200, 400));
+        logContent.setMaximumSize(new Dimension(200, 400));
         updateLogContent();
         add(logContent);
         Logger.debug("Протокол работает");

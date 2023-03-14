@@ -1,4 +1,4 @@
-package log;
+package robot.log;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;

@@ -1,16 +1,19 @@
-package windows;
+package robot.windows;
 
-import logic.GameVisualizer;
-import windows.gui.InternalFrame;
+import robot.logic.GameVisualizer;
+import robot.windows.gui.InternalFrame;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import java.awt.*;
 
 public class GameWindow extends InternalFrame {
     public GameWindow() {
-        super("Игровое поле", 400, 400, 400, 400, true, true);
+        super("Игровое поле", 960, 540, 400, 200, true, true);
+        setPreferredSize(new Dimension(960, 540));
         addPanel(new GameVisualizer());
+        pack();
         addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -28,6 +31,4 @@ public class GameWindow extends InternalFrame {
             }
         });
     }
-
-
 }
