@@ -1,7 +1,7 @@
 package robot.windows;
 
 import robot.log.Logger;
-import robot.logic.LogVisualizer;
+import robot.windows.logic.LogVisualizer;
 import robot.windows.gui.InternalFrame;
 
 import java.util.ResourceBundle;

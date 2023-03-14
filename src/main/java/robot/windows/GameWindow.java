@@ -1,6 +1,6 @@
 package robot.windows;
 
-import robot.logic.GameVisualizer;
+import robot.windows.logic.GameVisualizer;
 import robot.windows.gui.InternalFrame;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package robot.logic;
+package robot.windows.logic;
 
 import robot.log.LogChangeListener;
 import robot.log.LogEntry;

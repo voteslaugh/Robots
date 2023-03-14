@@ -1,4 +1,4 @@
-package robot.logic;
+package robot.windows.logic;
 
 import java.awt.Color;
 import java.awt.Graphics;
