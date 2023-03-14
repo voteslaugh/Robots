@@ -7,10 +7,11 @@ import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import java.awt.*;
+import java.util.ResourceBundle;
 
 public class GameWindow extends InternalFrame {
-    public GameWindow() {
-        super("Игровое поле", 960, 540, 400, 200, true, true);
+    public GameWindow(ResourceBundle bundle) {
+        super(bundle.getString("gameWindow"), 960, 540, 400, 200, true, true);
         setPreferredSize(new Dimension(960, 540));
         addPanel(new GameVisualizer());
         pack();
@@ -19,8 +20,8 @@ public class GameWindow extends InternalFrame {
             public void internalFrameClosing(InternalFrameEvent e) {
                 int option = JOptionPane.showInternalConfirmDialog(
                         GameWindow.this,
-                        "Вы действительно хотите закрыть это окно?",
-                        "Подтвердить закрытие",
+                        "Do you really want to close this window?",
+                        "Confirm closing",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
 

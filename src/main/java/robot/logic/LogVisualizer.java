@@ -20,7 +20,7 @@ public class LogVisualizer extends JPanel implements LogChangeListener {
         logContent.setMaximumSize(new Dimension(200, 400));
         updateLogContent();
         add(logContent);
-        Logger.debug("Протокол работает");
+        Logger.debug("The protocol is working");
     }
     private void updateLogContent()
     {
