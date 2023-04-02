@@ -8,6 +8,7 @@ import robot.windows.gui.MenuBar;
 import robot.windows.gui.Menu;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ResourceBundle;
 
 import javax.swing.*;
@@ -42,21 +43,9 @@ public class MainApplicationFrame extends Frame {
         MenuItem logMessage = new MenuItem(bundle.getString("logMessage"), KeyEvent.VK_S, null, "New line");
         logs.addMenuItems(logMessage);
 
-        Menu locale = new Menu(bundle.getString("locale"), KeyEvent.VK_C, "Localisation");
-        MenuItem ruLocale = new MenuItem(bundle.getString("ruLocale"), KeyEvent.VK_S, null, "Set language: RU");
-        ruLocale.addActionListener(e -> SwingUtilities.invokeLater(() -> {
-                menuBar.removeAll();
-                updateLocale("ru_locale");
-                resetUI();
-            }));
 
-        MenuItem enLocale = new MenuItem(bundle.getString("enLocale"), KeyEvent.VK_S, null, "Set language: EN");
-        enLocale.addActionListener(e -> SwingUtilities.invokeLater(() -> {
-                menuBar.removeAll();
-                updateLocale("en_locale");
-                resetUI();
-            }));
-        locale.addMenuItems(ruLocale, enLocale);
+        Menu locale = new Menu(bundle.getString("locale"), KeyEvent.VK_C, "Localisation");
+        getLocales(locale);
 
         Menu exit = new Menu(bundle.getString("exit"), KeyEvent.VK_X, "Closing the application");
         MenuItem exitItem = new MenuItem(bundle.getString("exitItem"), KeyEvent.VK_V, null, "Close the application");
@@ -77,11 +66,30 @@ public class MainApplicationFrame extends Frame {
         bundle = ResourceBundle.getBundle(newLocale);
     }
 
+    private void getLocales(Menu menu) {
+        File directory = new File("src/main/resources");
+        String[] files = directory.list((dir, name) -> name.endsWith(".properties"));
+
+        assert files != null;
+        for (String fileName : files) {
+            String localeName = fileName.replace(".properties", "");
+            MenuItem locale = new MenuItem(bundle.getString(localeName), KeyEvent.VK_S, null, "Changed to %s".formatted(localeName));
+            locale.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+                menuBar.removeAll();
+                updateLocale(localeName);
+                resetUI();
+            }));
+            menu.addMenuItems(locale);
+        }
+    }
+
     private void resetUI() {
         generateMenuBar();
         setJMenuBar(menuBar);
         gameWindow.setTitle(bundle.getString("gameWindow"));
         logWindow.setTitle(bundle.getString("logWindow"));
+        gameWindow.changeLocale(bundle);
+        logWindow.changeLocale(bundle);
         revalidate();
         repaint();
     }
