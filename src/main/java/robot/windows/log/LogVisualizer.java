@@ -1,9 +1,4 @@
-package robot.windows.logic;
-
-import robot.log.LogChangeListener;
-import robot.log.LogEntry;
-import robot.log.LogWindowSource;
-import robot.log.Logger;
+package robot.windows.log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,5 +34,9 @@ public class LogVisualizer extends JPanel implements LogChangeListener {
     @Override
     public void onLogChanged() {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+
+    public void unregister(){
+        this.getLogSource().unregisterListener(this);
     }
 }

@@ -1,4 +1,4 @@
-package robot.log;
+package robot.windows.log;
 
 public enum LogLevel
 {

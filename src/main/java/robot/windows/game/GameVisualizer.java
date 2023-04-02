@@ -1,4 +1,4 @@
-package robot.windows.logic;
+package robot.windows.game;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;

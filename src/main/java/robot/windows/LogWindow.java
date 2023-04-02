@@ -1,7 +1,7 @@
 package robot.windows;
 
-import robot.log.Logger;
-import robot.windows.logic.LogVisualizer;
+import robot.windows.log.Logger;
+import robot.windows.log.LogVisualizer;
 import robot.windows.gui.InternalFrame;
 
 import java.util.ResourceBundle;
@@ -18,7 +18,7 @@ public class LogWindow extends InternalFrame {
 
     @Override
     public void doDefaultCloseAction() {
-        logVisualizer.getLogSource().unregisterListener(logVisualizer);
+        logVisualizer.unregister();
         super.doDefaultCloseAction();
     }
 }
