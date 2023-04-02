@@ -1,6 +1,7 @@
 package robot.windows.log;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -17,14 +18,14 @@ public class LogWindowSource
     private int queueLength;
     
     private LinkedBlockingQueue<LogEntry> messages;
-    private final ArrayList<LogChangeListener> listeners;
+    private final ConcurrentLinkedQueue<LogChangeListener> listeners;
     private volatile LogChangeListener[] activeListeners;
     
     public LogWindowSource(int iQueueLength) 
     {
         queueLength = iQueueLength;
         messages = new LinkedBlockingQueue<>(iQueueLength);
-        listeners = new ArrayList<>();
+        listeners = new ConcurrentLinkedQueue<>();
     }
     
     public void registerListener(LogChangeListener listener)
