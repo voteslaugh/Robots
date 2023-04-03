@@ -11,13 +11,15 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 
 public class GameVisualizer extends JPanel {
-    private volatile Point robotPosition = new Point(100, 100);
+    private volatile Point robotPosition = new Point(300, 300);
     private volatile double robotDirection = 0;
 
     private volatile Point targetPosition = new Point(150, 100);
 
     private static final double MAX_VELOCITY = 0.1;
     private static final double MAX_ANGULAR_VELOCITY = 0.01;
+    private int SCREEN_WIDTH;
+    private int SCREEN_HEIGHT;
 
     private double distanceToTarget;
     private double angleToTarget;
@@ -93,7 +95,7 @@ public class GameVisualizer extends JPanel {
         return Math.min(Math.max(value, min), max);
     }
 
-    private void moveRobot(double velocity, double angularVelocity, double duration) {
+    private synchronized void moveRobot(double velocity, double angularVelocity, double duration) {
         velocity = applyLimits(velocity, 0, MAX_VELOCITY);
         angularVelocity = applyLimits(angularVelocity, -MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
         double newX = robotPosition.getX() + velocity / angularVelocity *
@@ -108,6 +110,18 @@ public class GameVisualizer extends JPanel {
         if (!Double.isFinite(newY)) {
             newY = robotPosition.getY() + velocity * duration * Math.sin(robotDirection);
         }
+
+        if (newX < 20) {
+            newX = 20;
+        } else if (newX > SCREEN_WIDTH - 20) {
+            newX = SCREEN_WIDTH - 20;
+        }
+        if (newY < 20) {
+            newY = 20;
+        } else if (newY > SCREEN_HEIGHT - 20) {
+            newY = SCREEN_HEIGHT - 20;
+        }
+
         robotPosition.setLocation(newX, newY);
         robotDirection = asNormalizedRadians(robotDirection + angularVelocity * duration);
     }
@@ -123,6 +137,8 @@ public class GameVisualizer extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        SCREEN_WIDTH = getWidth();
+        SCREEN_HEIGHT = getHeight();
         Graphics2D g2d = (Graphics2D) g;
         drawRobot(g2d, (int) robotPosition.getX(), (int) robotPosition.getY(), robotDirection);
         drawTarget(g2d, (int) targetPosition.getX(), (int) targetPosition.getY());
