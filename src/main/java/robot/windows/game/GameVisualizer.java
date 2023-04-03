@@ -1,6 +1,8 @@
 package robot.windows.game;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -10,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
-public class GameVisualizer extends JPanel {
+public class GameVisualizer extends JPanel implements ActionListener {
     private volatile Point robotPosition = new Point(300, 300);
     private volatile double robotDirection = 0;
 
@@ -25,8 +27,9 @@ public class GameVisualizer extends JPanel {
     private double angleToTarget;
 
     public GameVisualizer() {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
-        scheduler.scheduleAtFixedRate(this::onRedrawEvent, 0, 50, TimeUnit.MILLISECONDS);
+        Timer timer = new Timer(3, this);
+        timer.start();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
         scheduler.scheduleAtFixedRate(this::onModelUpdateEvent, 0, 10, TimeUnit.MILLISECONDS);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -172,5 +175,10 @@ public class GameVisualizer extends JPanel {
         fillOval(g, x, y, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 5, 5);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        onRedrawEvent();
     }
 }
