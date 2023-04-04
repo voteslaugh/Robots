@@ -90,6 +90,7 @@ public class MainApplicationFrame extends Frame {
         logWindow.setTitle(bundle.getString("logWindow"));
         gameWindow.changeLocale(bundle);
         logWindow.changeLocale(bundle);
+        this.changeLocale(bundle);
         revalidate();
         repaint();
     }
