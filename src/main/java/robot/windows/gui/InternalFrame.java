@@ -7,10 +7,11 @@ import javax.swing.event.InternalFrameListener;
 import java.awt.*;
 import java.util.ResourceBundle;
 
-public class InternalFrame extends JInternalFrame {
+public class InternalFrame extends JInternalFrame implements LocalizedDialogSupport {
 
     public InternalFrame(String title, int width, int height, int x, int y, boolean resizable, boolean maximizable) {
         super(title, resizable, true, maximizable, true);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setSize(width, height);
         setLocation(x, y);
         setMinimumSize(getSize());
@@ -27,13 +28,19 @@ public class InternalFrame extends JInternalFrame {
 
                 if (option == JOptionPane.YES_OPTION)
                     dispose();
-                else
-                    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             }
         });
     }
 
-    private void addListener(ResourceBundle bundle) {
+    public void addPanel(JPanel logic) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(logic, BorderLayout.CENTER);
+        getContentPane().add(panel);
+    }
+
+    @Override
+    public void addListener(ResourceBundle bundle) {
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -46,13 +53,12 @@ public class InternalFrame extends JInternalFrame {
 
                 if (option == JOptionPane.YES_OPTION)
                     dispose();
-                else
-                    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             }
         });
     }
 
-    private void removeListeners() {
+    @Override
+    public void removeListeners() {
         InternalFrameListener[] listeners = getInternalFrameListeners();
 
         for (InternalFrameListener ignored : listeners) {
@@ -60,14 +66,4 @@ public class InternalFrame extends JInternalFrame {
         }
     }
 
-    public void changeLocale(ResourceBundle bundle) {
-        removeListeners();
-        addListener(bundle);
-    }
-
-    public void addPanel(JPanel logic) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(logic, BorderLayout.CENTER);
-        getContentPane().add(panel);
-    }
 }

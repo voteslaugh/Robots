@@ -6,13 +6,12 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ResourceBundle;
 
-public class Frame extends JFrame {
+public class Frame extends JFrame implements LocalizedDialogSupport{
 
-    public void addFrames(InternalFrame... frames) {
-        for (InternalFrame frame: frames)
-            add(frame);
+    public Frame() {
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        addListener(new WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 int option = JOptionPane.showConfirmDialog(
@@ -21,30 +20,20 @@ public class Frame extends JFrame {
                         "Confirm closing",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
-
                 if (option == JOptionPane.YES_OPTION)
                     dispose();
-                else
-                    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             }
         });
     }
 
-    private void addListener(WindowAdapter adapter) {
-        addWindowListener(adapter);
+    public void addFrames(InternalFrame... frames) {
+        for (InternalFrame frame: frames)
+            add(frame);
     }
 
-    public void removeListeners() {
-        WindowListener[] listeners = getWindowListeners();
-
-        for (WindowListener listener : listeners) {
-            removeWindowListener(listener);
-        }
-    }
-
-    public void changeLocale(ResourceBundle bundle) {
-        removeListeners();
-        addListener(new WindowAdapter() {
+    @Override
+    public void addListener(ResourceBundle bundle) {
+        addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 int option = JOptionPane.showConfirmDialog(
@@ -60,5 +49,13 @@ public class Frame extends JFrame {
                     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             }
         });
+    }
+    @Override
+    public void removeListeners() {
+        WindowListener[] listeners = getWindowListeners();
+
+        for (WindowListener listener : listeners) {
+            removeWindowListener(listener);
+        }
     }
 }
