@@ -1,6 +1,5 @@
 package robot.windows.gui;
 
-import java.awt.event.WindowAdapter;
 import java.util.ResourceBundle;
 
 public interface LocalizedDialogSupport {

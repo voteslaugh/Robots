@@ -26,7 +26,7 @@ public class MenuItem extends JMenuItem {
         catch (ClassNotFoundException | InstantiationException
                | IllegalAccessException | UnsupportedLookAndFeelException e)
         {
-            // just ignore
+            Logger.error("Some error in setLookAndFeel");
         }
     }
 }

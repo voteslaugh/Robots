@@ -15,15 +15,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class LogWindowSource
 {
-    private int queueLength;
-    
     private LinkedBlockingQueue<LogEntry> messages;
     private final ConcurrentLinkedQueue<LogChangeListener> listeners;
     private volatile LogChangeListener[] activeListeners;
     
     public LogWindowSource(int iQueueLength) 
     {
-        queueLength = iQueueLength;
         messages = new LinkedBlockingQueue<>(iQueueLength);
         listeners = new ConcurrentLinkedQueue<>();
     }
@@ -62,6 +59,7 @@ public class LogWindowSource
                 }
             }
         }
+        assert activeListeners != null;
         for (LogChangeListener listener : activeListeners)
         {
             listener.onLogChanged();
