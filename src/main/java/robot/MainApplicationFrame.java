@@ -47,18 +47,7 @@ public class MainApplicationFrame extends Frame {
         Menu locale = new Menu(bundle.getString("locale"), KeyEvent.VK_C, "Localisation");
         getLocales(locale);
 
-        Menu exit = new Menu(bundle.getString("exit"), KeyEvent.VK_X, "Closing the application");
-        MenuItem exitItem = new MenuItem(bundle.getString("exitItem"), KeyEvent.VK_V, null, "Close the application");
-        exitItem.addActionListener(e -> {
-            int result = JOptionPane.showConfirmDialog(MainApplicationFrame.this, "Are you sure you want to get out?", "Logout confirmation", JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                dispose();
-                System.exit(0);
-            }
-        });
-        exit.addMenuItems(exitItem);
-
-        menuBar.addMenus(lookAndFeel, logs, locale, exit);
+        menuBar.addMenus(lookAndFeel, logs, locale);
         return menuBar;
     }
 
