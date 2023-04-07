@@ -3,17 +3,18 @@ package robot.windows.gui;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ResourceBundle;
 
-public class Frame extends JFrame implements LocalizedDialogSupport{
+public class Frame extends JFrame {
+
+    WindowAdapter closingListener;
 
     public Frame() {
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        addWindowListener(new WindowAdapter() {
+        closingListener = new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 int option = JOptionPane.showConfirmDialog(
                         Frame.this,
                         "Do you really want to close this window?",
@@ -23,7 +24,8 @@ public class Frame extends JFrame implements LocalizedDialogSupport{
                 if (option == JOptionPane.YES_OPTION)
                     dispose();
             }
-        });
+        };
+        addWindowListener(closingListener);
     }
 
     public void addFrames(InternalFrame... frames) {
@@ -31,11 +33,11 @@ public class Frame extends JFrame implements LocalizedDialogSupport{
             add(frame);
     }
 
-    @Override
-    public void addListener(ResourceBundle bundle) {
-        addWindowListener(new WindowAdapter() {
+    public WindowAdapter getClosingListenerByBundle(ResourceBundle bundle) {
+        return new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 int option = JOptionPane.showConfirmDialog(
                         Frame.this,
                         bundle.getString("dialog.message"),
@@ -45,17 +47,18 @@ public class Frame extends JFrame implements LocalizedDialogSupport{
 
                 if (option == JOptionPane.YES_OPTION)
                     dispose();
-                else
-                    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             }
-        });
+        };
     }
-    @Override
-    public void removeListeners() {
-        WindowListener[] listeners = getWindowListeners();
 
-        for (WindowListener listener : listeners) {
-            removeWindowListener(listener);
-        }
+    public void replaceClosingListener(WindowAdapter newClosingListener) {
+        removeWindowListener(closingListener);
+        closingListener = newClosingListener;
+        addWindowListener(newClosingListener);
     }
+
+    public void changeLocale(ResourceBundle bundle) {
+        replaceClosingListener(getClosingListenerByBundle(bundle));
+    }
+
 }

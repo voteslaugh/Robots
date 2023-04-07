@@ -3,22 +3,22 @@ package robot.windows.gui;
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 import java.awt.*;
 import java.util.ResourceBundle;
 
-public class InternalFrame extends JInternalFrame implements LocalizedDialogSupport {
+public class InternalFrame extends JInternalFrame {
 
+    private InternalFrameAdapter closingListener;
     public InternalFrame(String title, int width, int height, int x, int y, boolean resizable, boolean maximizable) {
         super(title, resizable, true, maximizable, true);
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setSize(width, height);
         setLocation(x, y);
         setMinimumSize(getSize());
         setVisible(true);
-        addInternalFrameListener(new InternalFrameAdapter() {
+        closingListener = new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
+                setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 int option = JOptionPane.showInternalConfirmDialog(
                         InternalFrame.this,
                         "Do you really want to close this window?",
@@ -29,7 +29,8 @@ public class InternalFrame extends JInternalFrame implements LocalizedDialogSupp
                 if (option == JOptionPane.YES_OPTION)
                     dispose();
             }
-        });
+        };
+        addInternalFrameListener(closingListener);
     }
 
     public void addPanel(JPanel logic) {
@@ -38,12 +39,17 @@ public class InternalFrame extends JInternalFrame implements LocalizedDialogSupp
         getContentPane().add(panel);
     }
 
-    @Override
-    public void addListener(ResourceBundle bundle) {
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        addInternalFrameListener(new InternalFrameAdapter() {
+    public void replaceClosingListener(InternalFrameAdapter newClosingListener) {
+        this.removeInternalFrameListener(closingListener);
+        closingListener = newClosingListener;
+        this.addInternalFrameListener(newClosingListener);
+    }
+
+    public InternalFrameAdapter getClosingListenerByBundle(ResourceBundle bundle) {
+        return new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
+                setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 int option = JOptionPane.showInternalConfirmDialog(
                         InternalFrame.this,
                         bundle.getString("dialog.message"),
@@ -54,16 +60,11 @@ public class InternalFrame extends JInternalFrame implements LocalizedDialogSupp
                 if (option == JOptionPane.YES_OPTION)
                     dispose();
             }
-        });
+        };
     }
 
-    @Override
-    public void removeListeners() {
-        InternalFrameListener[] listeners = getInternalFrameListeners();
-
-        for (InternalFrameListener ignored : listeners) {
-            removeInternalFrameListener(ignored);
-        }
+    public void changeLocale(ResourceBundle bundle) {
+        replaceClosingListener(getClosingListenerByBundle(bundle));
     }
 
 }

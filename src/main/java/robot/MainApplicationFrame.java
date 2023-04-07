@@ -6,6 +6,7 @@ import robot.windows.gui.Frame;
 import robot.windows.gui.MenuItem;
 import robot.windows.gui.MenuBar;
 import robot.windows.gui.Menu;
+import robot.windows.state.SerializedHandler;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -19,6 +20,7 @@ public class MainApplicationFrame extends Frame {
     LogWindow logWindow;
     MenuBar menuBar;
     ResourceBundle bundle;
+    SerializedHandler serializedHandler;
 
     public MainApplicationFrame() {
         setContentPane(new JDesktopPane());
