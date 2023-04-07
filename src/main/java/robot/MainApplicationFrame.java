@@ -21,7 +21,7 @@ public class MainApplicationFrame extends Frame implements Serializable {
     GameWindow gameWindow;
     LogWindow logWindow;
     MenuBar menuBar;
-    ResourceBundle localeBundle = ResourceBundle.getBundle("en_locale");
+    static ResourceBundle localeBundle = ResourceBundle.getBundle("en_locale");
     Preferences prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
 
     public MainApplicationFrame() {
@@ -55,7 +55,7 @@ public class MainApplicationFrame extends Frame implements Serializable {
                 }
 
                 addFrames(gameWindow, logWindow);
-                setJMenuBar(generateMenuBar());
+                generateMenuBar();
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
                 pack();
 
@@ -79,7 +79,7 @@ public class MainApplicationFrame extends Frame implements Serializable {
         });
     }
 
-    private MenuBar generateMenuBar() {
+    private void generateMenuBar() {
         menuBar = new MenuBar();
 
         Menu lookAndFeel = new Menu(localeBundle.getString("lookAndFeel"), KeyEvent.VK_V, "Managing the application display mode");
@@ -96,10 +96,10 @@ public class MainApplicationFrame extends Frame implements Serializable {
         getLocales(locale);
 
         menuBar.addMenus(lookAndFeel, logs, locale);
-        return menuBar;
+        setJMenuBar(menuBar);
     }
 
-    private void updateLocale(String newLocale) {
+    public static void setLocale(String newLocale) {
         localeBundle = ResourceBundle.getBundle(newLocale);
     }
 
@@ -112,8 +112,7 @@ public class MainApplicationFrame extends Frame implements Serializable {
             String localeName = fileName.replace(".properties", "");
             MenuItem locale = new MenuItem(localeBundle.getString(localeName), KeyEvent.VK_S, null, "Changed to %s".formatted(localeName));
             locale.addActionListener(e -> SwingUtilities.invokeLater(() -> {
-                menuBar.removeAll();
-                updateLocale(localeName);
+                setLocale(localeName);
                 resetUI();
             }));
             menu.addMenuItems(locale);
@@ -122,7 +121,6 @@ public class MainApplicationFrame extends Frame implements Serializable {
 
     private void resetUI() {
         generateMenuBar();
-        setJMenuBar(menuBar);
         gameWindow.setTitle(localeBundle.getString("gameWindow"));
         logWindow.setTitle(localeBundle.getString("logWindow"));
         gameWindow.changeLocale(localeBundle);
