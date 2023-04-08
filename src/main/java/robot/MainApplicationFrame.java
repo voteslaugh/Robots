@@ -80,22 +80,10 @@ public class MainApplicationFrame extends Frame implements Serializable {
     }
 
     private void generateMenuBar() {
-        menuBar = new MenuBar();
-
-        Menu lookAndFeel = new Menu(localeBundle.getString("lookAndFeel"), KeyEvent.VK_V, "Managing the application display mode");
-        MenuItem system = new MenuItem(localeBundle.getString("system"), KeyEvent.VK_S, UIManager.getSystemLookAndFeelClassName(), null);
-        MenuItem crossplatform = new MenuItem(localeBundle.getString("crossplatform"), KeyEvent.VK_S, UIManager.getCrossPlatformLookAndFeelClassName(), null);
-        lookAndFeel.addMenuItems(system, crossplatform);
-
-        Menu logs = new Menu(localeBundle.getString("logs"), KeyEvent.VK_T, "Test commands");
-        MenuItem logMessage = new MenuItem(localeBundle.getString("logMessage"), KeyEvent.VK_S, null, "New line");
-        logs.addMenuItems(logMessage);
-
-
+        menuBar = new MenuBar(localeBundle);
         Menu locale = new Menu(localeBundle.getString("locale"), KeyEvent.VK_C, "Localisation");
         getLocales(locale);
-
-        menuBar.addMenus(lookAndFeel, logs, locale);
+        menuBar.addMenus(locale);
         setJMenuBar(menuBar);
     }
 
