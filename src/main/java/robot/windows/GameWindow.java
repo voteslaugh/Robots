@@ -9,7 +9,7 @@ import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
-public class GameWindow extends InternalFrame implements Serializable {
+public class GameWindow extends InternalFrame {
     public GameWindow(ResourceBundle bundle) {
         super(bundle.getString("gameWindow"), bundle, 960, 540, 400, 200, true, true);
         setPreferredSize(new Dimension(960, 540));

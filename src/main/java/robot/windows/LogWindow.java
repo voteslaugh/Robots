@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ResourceBundle;
 
 
-public class LogWindow extends InternalFrame implements Serializable {
+public class LogWindow extends InternalFrame {
     LogVisualizer logVisualizer = new LogVisualizer(Logger.getDefaultLogSource());
 
     public LogWindow(ResourceBundle bundle) {

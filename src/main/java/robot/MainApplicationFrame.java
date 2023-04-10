@@ -16,7 +16,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.*;
 
-public class MainApplicationFrame extends Frame implements Serializable {
+public class MainApplicationFrame extends Frame {
 
     GameWindow gameWindow;
     LogWindow logWindow;

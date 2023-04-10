@@ -5,7 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.Serializable;
 
-public class Frame extends LocalizableFrame implements Serializable {
+public class Frame extends LocalizableFrame {
 
     public Frame() {
 
