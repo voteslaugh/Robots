@@ -6,12 +6,12 @@ import robot.windows.log.Logger;
 
 import java.awt.*;
 import java.beans.PropertyVetoException;
-import java.io.Serializable;
 import java.util.ResourceBundle;
 
 public class GameWindow extends InternalFrame {
-    public GameWindow(ResourceBundle bundle) {
-        super(bundle.getString("gameWindow"), bundle, 960, 540, 400, 200, true, true);
+    public GameWindow(ResourceBundle locale) {
+        super(locale.getString("gameWindow"), locale, 960, 540, 400, 200, true, true);
+        setName("gameWindow");
         setPreferredSize(new Dimension(960, 540));
         addPanel(new GameVisualizer());
         pack();

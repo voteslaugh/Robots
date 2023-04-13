@@ -21,12 +21,12 @@ public class MainApplicationFrame extends Frame {
     GameWindow gameWindow;
     LogWindow logWindow;
     MenuBar menuBar;
-    static ResourceBundle localeBundle = ResourceBundle.getBundle("en_locale");
+    ResourceBundle localeBundle;
     Preferences prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
 
     public MainApplicationFrame() {
         setContentPane(new JDesktopPane());
-        localeBundle = ResourceBundle.getBundle(prefs.get("locale", localeBundle.getBaseBundleName()));
+        localeBundle = ResourceBundle.getBundle(prefs.get("locale", "en_locale"));
         gameWindow = new GameWindow(localeBundle);
         logWindow = new LogWindow(localeBundle);
         addWindowListener(new WindowAdapter() {
@@ -40,18 +40,18 @@ public class MainApplicationFrame extends Frame {
                         JOptionPane.QUESTION_MESSAGE);
 
                 if (option == JOptionPane.YES_OPTION) {
-                    int x = prefs.getInt("gameWindowX", gameWindow.getX());
-                    int y = prefs.getInt("gameWindowY", gameWindow.getY());
-                    int width = prefs.getInt("gameWindowWidth", gameWindow.getWidth());
-                    int height = prefs.getInt("gameWindowHeight", gameWindow.getHeight());
-                    boolean icon = prefs.getBoolean("gameWindowIcon", gameWindow.isIcon());
-                    gameWindow = new GameWindow(localeBundle, width, height, x, y, icon);
-                    x = prefs.getInt("logWindowX", logWindow.getX());
-                    y = prefs.getInt("logWindowY", logWindow.getY());
-                    width = prefs.getInt("logWindowWidth", logWindow.getWidth());
-                    height = prefs.getInt("logWindowHeight", logWindow.getHeight());
-                    icon = prefs.getBoolean("logWindowIcon", logWindow.isIcon());
-                    logWindow = new LogWindow(localeBundle, width, height, x, y, icon);
+                    String name = gameWindow.getName();
+                    gameWindow.changeState(prefs.getInt(name + ".x", gameWindow.getX()),
+                            prefs.getInt(name + ".y", gameWindow.getY()),
+                            prefs.getInt(name + ".width", gameWindow.getWidth()),
+                            prefs.getInt(name + ".height", gameWindow.getHeight()),
+                            prefs.getBoolean(name + ".icon", gameWindow.isIcon()));
+                    name = logWindow.getName();
+                    logWindow.changeState(prefs.getInt(name + ".x", logWindow.getX()),
+                            prefs.getInt(name + ".y", logWindow.getY()),
+                            prefs.getInt(name + ".width", logWindow.getWidth()),
+                            prefs.getInt(name + ".height", logWindow.getHeight()),
+                            prefs.getBoolean(name + ".icon", logWindow.isIcon()));
                 }
 
                 addFrames(gameWindow, logWindow);
@@ -59,22 +59,6 @@ public class MainApplicationFrame extends Frame {
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
                 pack();
 
-            }
-        });
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                prefs.putInt("gameWindowX", gameWindow.getX());
-                prefs.putInt("gameWindowY", gameWindow.getY());
-                prefs.putInt("gameWindowWidth", gameWindow.getWidth());
-                prefs.putInt("gameWindowHeight", gameWindow.getHeight());
-                prefs.putBoolean("gameWindowIcon", gameWindow.isIcon());
-                prefs.putInt("logWindowX", logWindow.getX());
-                prefs.putInt("logWindowY", logWindow.getY());
-                prefs.putInt("logWindowWidth", logWindow.getWidth());
-                prefs.putInt("logWindowHeight", logWindow.getHeight());
-                prefs.putBoolean("logWindowIcon", logWindow.isIcon());
-                prefs.put("locale", localeBundle.getBaseBundleName());
             }
         });
     }
@@ -87,7 +71,7 @@ public class MainApplicationFrame extends Frame {
         setJMenuBar(menuBar);
     }
 
-    public static void setLocale(String newLocale) {
+    public void setLocale(String newLocale) {
         localeBundle = ResourceBundle.getBundle(newLocale);
     }
 

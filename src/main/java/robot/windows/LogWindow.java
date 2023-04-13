@@ -5,7 +5,6 @@ import robot.windows.log.LogVisualizer;
 import robot.windows.gui.InternalFrame;
 
 import java.beans.PropertyVetoException;
-import java.io.Serializable;
 import java.util.ResourceBundle;
 
 
@@ -14,6 +13,7 @@ public class LogWindow extends InternalFrame {
 
     public LogWindow(ResourceBundle bundle) {
         super(bundle.getString("logWindow"), bundle,200, 400, 0, 0, true, true);
+        setName("logWindow");
         addPanel(logVisualizer);
         pack();
     }
