@@ -33,7 +33,7 @@ public abstract class LocalizableFrame extends JFrame {
         addWindowListener(newClosingListener);
     }
 
-    public void changeLocale(ResourceBundle bundle) {
+    public void changeClosingListenerLocale(ResourceBundle bundle) {
         replaceClosingListener(getClosingListenerByBundle(bundle));
     }
 

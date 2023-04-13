@@ -74,7 +74,7 @@ public class MainApplicationFrame extends Frame {
         logWindow.setTitle(localeBundle.getString("logWindow"));
         gameWindow.changeLocale(localeBundle);
         logWindow.changeLocale(localeBundle);
-        this.changeLocale(localeBundle);
+        this.changeClosingListenerLocale(localeBundle);
         revalidate();
         repaint();
     }
