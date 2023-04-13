@@ -48,7 +48,6 @@ public class MainApplicationFrame extends Frame {
         menuBar = new MenuBar(localeBundle);
         Menu localeMenu = new Menu(localeBundle.getString("locale"), KeyEvent.VK_C, "Localisation");
         getLocales(localeMenu);
-        resetUI();
         menuBar.addMenus(localeMenu);
         setJMenuBar(menuBar);
     }
