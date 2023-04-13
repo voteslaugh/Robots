@@ -11,9 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
-import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
-
 import javax.swing.*;
 
 public class MainApplicationFrame extends Frame {
@@ -21,14 +18,12 @@ public class MainApplicationFrame extends Frame {
     GameWindow gameWindow;
     LogWindow logWindow;
     MenuBar menuBar;
-    ResourceBundle localeBundle;
-    Preferences prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
 
     public MainApplicationFrame() {
         setContentPane(new JDesktopPane());
-        localeBundle = ResourceBundle.getBundle(prefs.get("locale", "en_locale"));
         gameWindow = new GameWindow(localeBundle);
         logWindow = new LogWindow(localeBundle);
+        addFrames(gameWindow, logWindow);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -40,39 +35,22 @@ public class MainApplicationFrame extends Frame {
                         JOptionPane.QUESTION_MESSAGE);
 
                 if (option == JOptionPane.YES_OPTION) {
-                    String name = gameWindow.getName();
-                    gameWindow.changeState(prefs.getInt(name + ".x", gameWindow.getX()),
-                            prefs.getInt(name + ".y", gameWindow.getY()),
-                            prefs.getInt(name + ".width", gameWindow.getWidth()),
-                            prefs.getInt(name + ".height", gameWindow.getHeight()),
-                            prefs.getBoolean(name + ".icon", gameWindow.isIcon()));
-                    name = logWindow.getName();
-                    logWindow.changeState(prefs.getInt(name + ".x", logWindow.getX()),
-                            prefs.getInt(name + ".y", logWindow.getY()),
-                            prefs.getInt(name + ".width", logWindow.getWidth()),
-                            prefs.getInt(name + ".height", logWindow.getHeight()),
-                            prefs.getBoolean(name + ".icon", logWindow.isIcon()));
+                    restoreState();
                 }
-
-                addFrames(gameWindow, logWindow);
-                generateMenuBar();
-                setDefaultCloseOperation(EXIT_ON_CLOSE);
-                pack();
-
             }
         });
+        generateMenuBar();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        pack();
     }
 
     private void generateMenuBar() {
         menuBar = new MenuBar(localeBundle);
-        Menu locale = new Menu(localeBundle.getString("locale"), KeyEvent.VK_C, "Localisation");
-        getLocales(locale);
-        menuBar.addMenus(locale);
+        Menu localeMenu = new Menu(localeBundle.getString("locale"), KeyEvent.VK_C, "Localisation");
+        getLocales(localeMenu);
+        resetUI();
+        menuBar.addMenus(localeMenu);
         setJMenuBar(menuBar);
-    }
-
-    public void setLocale(String newLocale) {
-        localeBundle = ResourceBundle.getBundle(newLocale);
     }
 
     private void getLocales(Menu menu) {
