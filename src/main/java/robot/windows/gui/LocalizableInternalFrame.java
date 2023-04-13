@@ -37,7 +37,7 @@ public abstract class LocalizableInternalFrame extends JInternalFrame {
         };
     }
 
-    public void changeLocale(ResourceBundle bundle) {
+    public void changeClosingListenerLocale(ResourceBundle bundle) {
         replaceClosingListener(getClosingListenerByBundle(bundle));
     }
 

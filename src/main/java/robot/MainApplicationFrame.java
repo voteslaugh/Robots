@@ -72,8 +72,8 @@ public class MainApplicationFrame extends Frame {
         generateMenuBar();
         gameWindow.setTitle(localeBundle.getString("gameWindow"));
         logWindow.setTitle(localeBundle.getString("logWindow"));
-        gameWindow.changeLocale(localeBundle);
-        logWindow.changeLocale(localeBundle);
+        gameWindow.changeClosingListenerLocale(localeBundle);
+        logWindow.changeClosingListenerLocale(localeBundle);
         this.changeClosingListenerLocale(localeBundle);
         revalidate();
         repaint();
