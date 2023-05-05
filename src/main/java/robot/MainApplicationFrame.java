@@ -1,29 +1,25 @@
 package robot;
 
-import robot.windows.GameWindow;
-import robot.windows.LogWindow;
-import robot.windows.gui.Frame;
-import robot.windows.gui.MenuItem;
-import robot.windows.gui.MenuBar;
-import robot.windows.gui.Menu;
+import robot.windows.gui.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
+import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 import javax.swing.*;
 
 public class MainApplicationFrame extends Frame {
 
-    GameWindow gameWindow;
-    LogWindow logWindow;
+    InternalFrame[] internalFrames;
     MenuBar menuBar;
 
-    public MainApplicationFrame() {
+    public MainApplicationFrame(ResourceBundle localeBundle, Preferences preferences, InternalFrame... internalFrames) {
+        super(localeBundle, preferences);
+        this.internalFrames = internalFrames;
         setContentPane(new JDesktopPane());
-        gameWindow = new GameWindow(localeBundle);
-        logWindow = new LogWindow(localeBundle);
-        addFrames(gameWindow, logWindow);
+        addFrames(internalFrames);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -70,10 +66,9 @@ public class MainApplicationFrame extends Frame {
 
     private void resetUI() {
         generateMenuBar();
-        gameWindow.setTitle(localeBundle.getString("gameWindow"));
-        logWindow.setTitle(localeBundle.getString("logWindow"));
-        gameWindow.changeClosingListenerLocale(localeBundle);
-        logWindow.changeClosingListenerLocale(localeBundle);
+        for (InternalFrame internalFrame: internalFrames) {
+            internalFrame.setTitle(localeBundle.getString(internalFrame.getName()));
+        }
         this.changeClosingListenerLocale(localeBundle);
         revalidate();
         repaint();

@@ -1,7 +1,5 @@
 package robot.windows.gui;
 
-import robot.MainApplicationFrame;
-
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -11,13 +9,13 @@ import java.util.prefs.Preferences;
 
 public class Frame extends LocalizableFrame {
 
-    Preferences prefs;
+    Preferences preferences;
     LinkedList <InternalFrame> internalFrames;
     protected ResourceBundle localeBundle;
-    public Frame() {
-        prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
+    public Frame(ResourceBundle localeBundle, Preferences preferences) {
         internalFrames = new LinkedList<>();
-        localeBundle = ResourceBundle.getBundle(prefs.get("locale", "en_locale"));
+        this.localeBundle = localeBundle;
+        this.preferences = preferences;
         closingListener = new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -41,7 +39,7 @@ public class Frame extends LocalizableFrame {
                 for (InternalFrame internalFrame: internalFrames) {
                     internalFrame.dispose();
                 }
-                prefs.put("locale", localeBundle.getBaseBundleName());
+                Frame.this.preferences.put("locale", localeBundle.getBaseBundleName());
             }
         });
     }
@@ -49,11 +47,11 @@ public class Frame extends LocalizableFrame {
     public void restoreState() {
         for (InternalFrame internalFrame: internalFrames) {
             String name = internalFrame.getName();
-            internalFrame.changeState(prefs.getInt(name + ".x", internalFrame.getX()),
-                    prefs.getInt(name + ".y", internalFrame.getY()),
-                    prefs.getInt(name + ".width", internalFrame.getWidth()),
-                    prefs.getInt(name + ".height", internalFrame.getHeight()),
-                    prefs.getBoolean(name + ".icon", internalFrame.isIcon()));
+            internalFrame.changeState(preferences.getInt(name + ".x", internalFrame.getX()),
+                    preferences.getInt(name + ".y", internalFrame.getY()),
+                    preferences.getInt(name + ".width", internalFrame.getWidth()),
+                    preferences.getInt(name + ".height", internalFrame.getHeight()),
+                    preferences.getBoolean(name + ".icon", internalFrame.isIcon()));
         }
     }
 
