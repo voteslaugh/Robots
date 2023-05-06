@@ -1,5 +1,7 @@
 package robot.windows.gui;
 
+import robot.MainApplicationFrame;
+
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -10,7 +12,7 @@ import java.util.prefs.Preferences;
 public class Frame extends LocalizableFrame {
 
     Preferences preferences;
-    LinkedList <InternalFrame> internalFrames;
+    protected LinkedList <InternalFrame> internalFrames;
     protected ResourceBundle localeBundle;
     public Frame(ResourceBundle localeBundle, Preferences preferences) {
         internalFrames = new LinkedList<>();
@@ -40,6 +42,22 @@ public class Frame extends LocalizableFrame {
                     internalFrame.dispose();
                 }
                 Frame.this.preferences.put("locale", localeBundle.getBaseBundleName());
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                int option = JOptionPane.showConfirmDialog(
+                        Frame.this,
+                        localeBundle.getString("opened.message"),
+                        localeBundle.getString("opened.title"),
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (option == JOptionPane.YES_OPTION) {
+                    restoreState();
+                }
             }
         });
     }

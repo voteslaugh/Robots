@@ -14,14 +14,15 @@ public class Main
       try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       } catch (Exception e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
       Preferences preferences = Preferences.userNodeForPackage(MainApplicationFrame.class);
       ResourceBundle localeBundle = ResourceBundle.getBundle(preferences.get("locale", "en_locale"));
 
+      GameWindow gameWindow = new GameWindow(localeBundle);
+      LogWindow logWindow = new LogWindow(localeBundle);
+
       SwingUtilities.invokeLater(() -> {
-        GameWindow gameWindow = new GameWindow(localeBundle);
-        LogWindow logWindow = new LogWindow(localeBundle);
         MainApplicationFrame frame = new MainApplicationFrame(localeBundle, preferences, gameWindow, logWindow);
         frame.pack();
         frame.setVisible(true);
