@@ -1,7 +1,5 @@
 package robot.windows.gui;
 
-import robot.MainApplicationFrame;
-
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

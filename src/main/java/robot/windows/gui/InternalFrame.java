@@ -13,25 +13,24 @@ import java.util.prefs.Preferences;
 
 public class InternalFrame extends LocalizableInternalFrame {
 
-    public InternalFrame(String title, ResourceBundle bundle, int width, int height, int x, int y, boolean resizable, boolean maximizable) {
+    public InternalFrame(String title, ResourceBundle locale, Preferences preferences, int width, int height, int x, int y, boolean resizable, boolean maximizable) {
         super(title, resizable, true, maximizable, true);
         setSize(width, height);
         setLocation(x, y);
         setMinimumSize(getSize());
         setVisible(true);
-        closingListener = getClosingListenerByBundle(bundle);
+        closingListener = getClosingListenerByBundle(locale);
         addInternalFrameListener(closingListener);
         addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosed(InternalFrameEvent e) {
-                Preferences prefs = Preferences.userNodeForPackage(MainApplicationFrame.class);
                 String name = e.getInternalFrame().getName();
-                prefs.putInt(name + ".x", e.getInternalFrame().getX());
-                prefs.putInt(name + ".y", e.getInternalFrame().getY());
-                prefs.putInt(name + ".width", e.getInternalFrame().getWidth());
-                prefs.putInt(name + ".height", e.getInternalFrame().getHeight());
-                prefs.putBoolean(name + ".icon", e.getInternalFrame().isIcon());
-                prefs.put("locale", bundle.getBaseBundleName());
+                preferences.putInt(name + ".x", e.getInternalFrame().getX());
+                preferences.putInt(name + ".y", e.getInternalFrame().getY());
+                preferences.putInt(name + ".width", e.getInternalFrame().getWidth());
+                preferences.putInt(name + ".height", e.getInternalFrame().getHeight());
+                preferences.putBoolean(name + ".icon", e.getInternalFrame().isIcon());
+                preferences.put("locale", locale.getBaseBundleName());
             }
         });
     }

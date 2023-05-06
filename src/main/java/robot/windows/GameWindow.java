@@ -2,30 +2,18 @@ package robot.windows;
 
 import robot.windows.game.GameVisualizer;
 import robot.windows.gui.InternalFrame;
-import robot.windows.log.Logger;
 
 import java.awt.*;
-import java.beans.PropertyVetoException;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class GameWindow extends InternalFrame {
-    public GameWindow(ResourceBundle locale) {
-        super(locale.getString("gameWindow"), locale, 960, 540, 400, 200, true, true);
+    public GameWindow(ResourceBundle locale, Preferences preferences) {
+        super(locale.getString("gameWindow"), locale, preferences, 960, 540, 400, 200, true, true);
         setName("gameWindow");
         setPreferredSize(new Dimension(960, 540));
         addPanel(new GameVisualizer());
         pack();
     }
 
-    public GameWindow(ResourceBundle bundle, int width, int height, int x, int y, boolean icon) {
-        super(bundle.getString("gameWindow"), bundle, width, height, x, y, true, true);
-        setPreferredSize(new Dimension(width, height));
-        addPanel(new GameVisualizer());
-        pack();
-        try {
-            setIcon(icon);
-        } catch (PropertyVetoException e) {
-            Logger.error("Couldn't set icon for gameWindow");
-        }
-    }
 }
