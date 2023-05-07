@@ -1,6 +1,6 @@
 package robot.windows;
 
-import robot.windows.game.GameVisualizer;
+import robot.windows.game.GameController;
 import robot.windows.gui.InternalFrame;
 
 import java.awt.*;
@@ -12,7 +12,7 @@ public class GameWindow extends InternalFrame {
         super(locale.getString("gameWindow"), locale, preferences, 960, 540, 400, 200, true, true);
         setName("gameWindow");
         setPreferredSize(new Dimension(960, 540));
-        addPanel(new GameVisualizer());
+        addPanel(new GameController());
         pack();
     }
 
