@@ -8,8 +8,8 @@ public class Model {
 
     Character player;
     Character enemy;
-    final double ENEMY_VELOCITY = 1;
-    final double PLAYER_VELOCITY = 1;
+    final double ENEMY_VELOCITY = 0.05;
+    final double PLAYER_VELOCITY = 2;
 
     public Model() {
         player = new Character(new Point(150, 100), 0);
@@ -22,11 +22,19 @@ public class Model {
 
     private synchronized void moveRobot() {
         double angleToTarget = angleBetweenPoints(enemy.getPosition(), player.getPosition());
-        double angle = asNormalizedRadians(angleToTarget);
-        enemy.setDirection(angle);
+        double distanceToTarget = enemy.getPosition().distance(player.getPosition());
 
-        double newX = enemy.getPosition().getX() + ENEMY_VELOCITY * Math.cos(angle);
-        double newY = enemy.getPosition().getY() + ENEMY_VELOCITY * Math.sin(angle);
+        double velocityX = ENEMY_VELOCITY * Math.cos(angleToTarget);
+        double velocityY = ENEMY_VELOCITY * Math.sin(angleToTarget);
+
+        double signX = Math.signum(velocityX);
+        double signY = Math.signum(velocityY);
+
+        double absVelocityX = Math.abs(velocityX);
+        double absVelocityY = Math.abs(velocityY);
+
+        double newX = enemy.getPosition().getX() + absVelocityX * distanceToTarget * signX;
+        double newY = enemy.getPosition().getY() + absVelocityY * distanceToTarget * signY;
 
         enemy.setPosition(new Point((int) newX, (int) newY));
     }
