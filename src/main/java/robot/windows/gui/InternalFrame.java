@@ -1,6 +1,5 @@
 package robot.windows.gui;
 
-import robot.MainApplicationFrame;
 import robot.windows.log.Logger;
 
 import javax.swing.*;

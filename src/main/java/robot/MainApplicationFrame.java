@@ -47,8 +47,10 @@ public class MainApplicationFrame extends Frame {
 
     private void resetUI() {
         generateMenuBar();
-        for (InternalFrame internalFrame: internalFrames)
+        for (InternalFrame internalFrame: internalFrames) {
             internalFrame.setTitle(localeBundle.getString(internalFrame.getName()));
+            internalFrame.changeClosingListenerLocale(localeBundle);
+        }
         this.changeClosingListenerLocale(localeBundle);
         revalidate();
         repaint();
