@@ -4,12 +4,11 @@ import robot.windows.game.components.KeyboardHandler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GameController extends JPanel implements ActionListener {
+public class GameController extends JPanel {
     Model model;
     Visualizer visualizer;
     KeyboardHandler keyboardHandler;
@@ -21,14 +20,15 @@ public class GameController extends JPanel implements ActionListener {
         setFocusable(true);
         this.model = new Model();
         this.visualizer = new Visualizer();
-        Timer timer = new Timer(3, this);
-        timer.start();
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-        scheduler.scheduleAtFixedRate(() -> model.onModelUpdateEvent(), 0, 10, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService updateScheduler = Executors.newScheduledThreadPool(1);
+        updateScheduler.scheduleAtFixedRate(() -> model.onModelUpdateEvent(), 0, 10, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService drawScheduler = Executors.newScheduledThreadPool(1);
+        drawScheduler.scheduleAtFixedRate(this::repaint, 0, 3, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService actionScheduler = Executors.newScheduledThreadPool(1);
+        actionScheduler.scheduleAtFixedRate(this::handlePlayerAction, 0, 10, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    private void handlePlayerAction() {
         Point playerPosition = model.player.getPosition();
         int posX = playerPosition.x;
         int posY = playerPosition.y;
@@ -47,8 +47,6 @@ public class GameController extends JPanel implements ActionListener {
         }
         if (!model.isCollision(posX, posY))
             model.player.setPosition(new Point(posX, posY));
-
-        repaint();
     }
 
     @Override

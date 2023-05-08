@@ -12,7 +12,7 @@ public class Model {
     Character enemy;
     ArrayList<Shape> obstacles;
     final double ENEMY_VELOCITY = 3;
-    final double PLAYER_VELOCITY = 2;
+    final double PLAYER_VELOCITY = 4;
 
     public Model() {
         player = new Character(new Point(70, 150), 0);
