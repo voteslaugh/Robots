@@ -1,6 +1,7 @@
 package robot.windows.game;
 
 import robot.windows.game.components.KeyboardHandler;
+import robot.windows.game.world.Character;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,7 +54,8 @@ public class GameController extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        visualizer.drawEnemy(g2d, model.enemy.getPosition(), model.enemy.getDirection());
+        for (Character enemy: model.enemies)
+            visualizer.drawEnemy(g2d, enemy.getPosition(), enemy.getDirection());
         visualizer.drawPlayer(g2d, model.player.getPosition());
         visualizer.drawObstacles(g2d, model.obstacles);
     }

@@ -5,18 +5,21 @@ import robot.windows.game.world.Character;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class Model {
 
     Character player;
-    Character enemy;
+    ArrayList<Character> enemies;
     ArrayList<Shape> obstacles;
     final double ENEMY_VELOCITY = 3;
     final double PLAYER_VELOCITY = 4;
 
     public Model() {
         player = new Character(new Point(70, 150), 0);
-        enemy = new Character(new Point(880, 150), 0);
+        enemies = new ArrayList<>(List.of(new Character(new Point(880, 150), 0), new Character(new Point(880, 600), 0)));
         obstacles = new ArrayList<>();
         setUpObstacles();
     }
@@ -37,7 +40,8 @@ public class Model {
     }
 
     protected void onModelUpdateEvent() {
-        moveEnemy(enemy);
+        for (Character enemy: enemies)
+            moveEnemy(enemy);
     }
 
     public boolean isCollision(double x, double y) {
