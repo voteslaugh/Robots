@@ -30,19 +30,24 @@ public class GameController extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Point playerPosition = model.player.getPosition();
+        int posX = playerPosition.x;
+        int posY = playerPosition.y;
 
         if (keyboardHandler.isUpPressed()) {
-            playerPosition.y -= model.PLAYER_VELOCITY;
+            posY -= model.PLAYER_VELOCITY;
         }
         if (keyboardHandler.isDownPressed()) {
-            playerPosition.y += model.PLAYER_VELOCITY;
+            posY += model.PLAYER_VELOCITY;
         }
         if (keyboardHandler.isLeftPressed()) {
-            playerPosition.x -= model.PLAYER_VELOCITY;
+            posX -= model.PLAYER_VELOCITY;
         }
         if (keyboardHandler.isRightPressed()) {
-            playerPosition.x += model.PLAYER_VELOCITY;
+            posX += model.PLAYER_VELOCITY;
         }
+        if (!model.isCollision(posX, posY))
+            model.player.setPosition(new Point(posX, posY));
+
         repaint();
     }
 
@@ -52,6 +57,7 @@ public class GameController extends JPanel implements ActionListener {
         Graphics2D g2d = (Graphics2D) g;
         visualizer.drawEnemy(g2d, model.enemy.getPosition(), model.enemy.getDirection());
         visualizer.drawPlayer(g2d, model.player.getPosition());
+        visualizer.drawObstacles(g2d, model.obstacles);
     }
 
 }

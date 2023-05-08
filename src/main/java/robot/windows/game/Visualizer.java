@@ -2,6 +2,7 @@ package robot.windows.game;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 
 public class Visualizer {
 
@@ -34,6 +35,14 @@ public class Visualizer {
         fillCircle(g, position.x, position.y, 5);
         g.setColor(Color.BLACK);
         drawCircle(g, position.x, position.y, 5);
+    }
+
+    public void drawObstacles(Graphics2D g, ArrayList<Shape> obstacles) {
+        for (Shape obstacle: obstacles) {
+            g.draw((obstacle));
+            g.setColor(Color.GRAY);
+            g.fill(obstacle);
+        }
     }
 
 }
