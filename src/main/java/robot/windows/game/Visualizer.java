@@ -23,26 +23,30 @@ public class Visualizer {
             int posX = enemy.getPosition().x;
             int posY = enemy.getPosition().y;
             AffineTransform t = AffineTransform.getRotateInstance(enemy.getDirection(), posX, posY);
+            int hitBoxRadius = enemy.getHitBoxRadius();
             g.setTransform(t);
             g.setColor(Color.RED);
-            fillCircle(g, posX, posY, 30);
+            fillCircle(g, posX, posY, hitBoxRadius);
             g.setColor(Color.BLACK);
-            drawCircle(g, posX, posY, 30);
+            drawCircle(g, posX, posY, hitBoxRadius);
             g.setColor(Color.WHITE);
-            fillCircle(g, posX + 10, posY, 5);
+            fillCircle(g, posX + hitBoxRadius / 4, posY, 5);
             g.setColor(Color.BLACK);
-            drawCircle(g, posX + 10, posY, 5);
+            drawCircle(g, posX + hitBoxRadius / 4, posY, 5);
         }
     }
 
 
-    public void drawPlayer(Graphics2D g, Point position) {
+    public void drawPlayer(Graphics2D g, Character player) {
+        int posX = player.getPosition().x;
+        int posY = player.getPosition().y;
+        int hitBoxRadius = player.getHitBoxRadius();
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
         g.setColor(Color.GREEN);
-        fillCircle(g, position.x, position.y, 5);
+        g.fillRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
         g.setColor(Color.BLACK);
-        drawCircle(g, position.x, position.y, 5);
+        g.drawRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
     }
 
     public void drawObstacles(Graphics2D g, HashSet<Shape> obstacles) {

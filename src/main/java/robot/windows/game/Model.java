@@ -20,7 +20,7 @@ public class Model {
     final double BULLET_VELOCITY = 4;
 
     public Model() {
-        player = new Character(new Point(70, 150), 0, null);
+        player = new Character(new Point(70, 150), 0, 20);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
         setUpEnemies();
@@ -44,7 +44,11 @@ public class Model {
     }
 
     public void setUpEnemies() {
-        enemies.addAll(List.of(new Character(new Point(880, 150), 0, 20), new Character(new Point(880, 600), 0, 20)));
+        enemies.addAll(List.of(
+                new Character(new Point(880, 150), 0, 60),
+                new Character(new Point(880, 600), 0, 30),
+                new Character(new Point(600, 600), 0, 10)
+        ));
     }
 
     public static double angleBetweenPoints(Point p1, Point p2) {
@@ -52,7 +56,7 @@ public class Model {
     }
 
     protected void onModelUpdateEvent() {
-        for (Character enemy: enemies) {
+        for (Character enemy : enemies) {
             Point destination = player.getPosition();
             if (!(enemy.getPosition().distance(destination) < 2))
                 moveEnemy(enemy, destination);
@@ -71,7 +75,7 @@ public class Model {
     }
 
     public boolean isCollisionObstacle(Point position) {
-        for (Shape obstacle: obstacles) {
+        for (Shape obstacle : obstacles) {
             if (isContains(position, obstacle))
                 return true;
         }
@@ -92,21 +96,21 @@ public class Model {
     }
 
     public boolean isEnemyHit(Shape hitBox) {
-        for (Bullet bullet: bullets)
+        for (Bullet bullet : bullets)
             if (isContains(bullet.getPosition(), hitBox))
                 return true;
         return false;
     }
 
     private synchronized void moveBullets() {
-            Iterator<Bullet> iterator = bullets.iterator();
-            while (iterator.hasNext()) {
-                Bullet bullet = iterator.next();
-                Point position = bullet.getPosition();
-                bullet.setPosition(moveByDirection(position, bullet.getDirection(), BULLET_VELOCITY));
-                if (isCollisionObstacle(new Point(position.x, position.y))) {
-                    iterator.remove();
-                }
+        Iterator<Bullet> iterator = bullets.iterator();
+        while (iterator.hasNext()) {
+            Bullet bullet = iterator.next();
+            Point position = bullet.getPosition();
+            bullet.setPosition(moveByDirection(position, bullet.getDirection(), BULLET_VELOCITY));
+            if (isCollisionObstacle(new Point(position.x, position.y))) {
+                iterator.remove();
+            }
         }
     }
 }

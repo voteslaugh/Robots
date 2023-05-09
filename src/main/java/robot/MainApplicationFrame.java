@@ -1,6 +1,10 @@
 package robot;
 
 import robot.windows.gui.*;
+import robot.windows.gui.Frame;
+import robot.windows.gui.Menu;
+import robot.windows.gui.MenuBar;
+import robot.windows.gui.MenuItem;
 
 import java.awt.event.KeyEvent;
 import java.io.*;

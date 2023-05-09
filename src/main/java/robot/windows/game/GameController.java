@@ -83,7 +83,7 @@ public class GameController extends JPanel {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         visualizer.drawEnemies(g2d, model.enemies);
-        visualizer.drawPlayer(g2d, model.player.getPosition());
+        visualizer.drawPlayer(g2d, model.player);
         visualizer.drawObstacles(g2d, model.obstacles);
         visualizer.drawBullets(g2d, model.bullets);
     }
