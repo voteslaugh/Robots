@@ -5,7 +5,6 @@ import robot.windows.game.world.Character;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +18,7 @@ public class Visualizer {
         g.drawArc(centerX - diameter / 2, centerY - diameter / 2, diameter, diameter, 0, 360);
     }
 
-    public void drawEnemies(Graphics2D g, HashSet<Character> enemies) {
+    public void drawEnemies(Graphics2D g, Set<Character> enemies) {
         for (Character enemy: enemies) {
             int posX = enemy.getPosition().x;
             int posY = enemy.getPosition().y;

@@ -1,14 +1,22 @@
 package robot.windows.game.world;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public class Character {
     private Point position;
     private volatile double direction;
+    private final Integer hitBoxRadius;
 
-    public Character(Point position, double direction) {
+    public Character(Point position, double direction, Integer hitBoxRadius) {
         this.position = position;
         this.direction = direction;
+        this.hitBoxRadius = hitBoxRadius;
+    }
+
+    public Shape getHitBox() {
+        double offset = (double) hitBoxRadius / 2;
+        return new Rectangle2D.Double(position.x - offset, position.y - offset, hitBoxRadius, hitBoxRadius);
     }
 
     public void setPosition(Point position) {

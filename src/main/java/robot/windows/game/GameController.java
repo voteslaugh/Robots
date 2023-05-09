@@ -74,7 +74,7 @@ public class GameController extends JPanel {
         if (keyboardHandler.isRightPressed()) {
             posX += model.PLAYER_VELOCITY;
         }
-        if (!model.isCollision(posX, posY))
+        if (!model.isCollisionObstacle(new Point(posX, posY)))
             model.player.setPosition(new Point(posX, posY));
     }
 

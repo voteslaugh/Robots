@@ -5,16 +5,14 @@ import robot.windows.game.world.Character;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Model {
 
     Character player;
-    HashSet<Character> enemies;
+    Set<Character> enemies;
     HashSet<Shape> obstacles;
     Set<Bullet> bullets;
     final double ENEMY_VELOCITY = 3;
@@ -22,10 +20,11 @@ public class Model {
     final double BULLET_VELOCITY = 4;
 
     public Model() {
-        player = new Character(new Point(70, 150), 0);
-        enemies = new HashSet<>(List.of(new Character(new Point(880, 150), 0), new Character(new Point(880, 600), 0)));
-        obstacles = new HashSet<>();
+        player = new Character(new Point(70, 150), 0, null);
         bullets = ConcurrentHashMap.newKeySet();
+        enemies = ConcurrentHashMap.newKeySet();
+        setUpEnemies();
+        obstacles = new HashSet<>();
         setUpObstacles();
     }
 
@@ -44,17 +43,12 @@ public class Model {
         obstacles.add(new Rectangle2D.Double(300, 550, 200, 50));
     }
 
-    public static double angleBetweenPoints(Point p1, Point p2) {
-        double angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-        return asNormalizedRadians(angle);
+    public void setUpEnemies() {
+        enemies.addAll(List.of(new Character(new Point(880, 150), 0, 20), new Character(new Point(880, 600), 0, 20)));
     }
 
-    private static double asNormalizedRadians(double angle) {
-        angle %= 2 * Math.PI;
-        if (angle < 0) {
-            angle += 2 * Math.PI;
-        }
-        return angle;
+    public static double angleBetweenPoints(Point p1, Point p2) {
+        return Math.atan2(p2.y - p1.y, p2.x - p1.x);
     }
 
     protected void onModelUpdateEvent() {
@@ -72,28 +66,36 @@ public class Model {
         return new Point((int) (start.getX() + velocityX), (int) ((start.getY() + velocityY)));
     }
 
-    public boolean isCollision(double x, double y) {
-        for (Shape obstacle : obstacles) {
-            if (obstacle.contains(x, y)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isContains(Point position, Shape shape) {
+        return shape.contains(position);
     }
 
-    public boolean isCollision(int x, int y) {
-        return isCollision(x, (double) y);
+    public boolean isCollisionObstacle(Point position) {
+        for (Shape obstacle: obstacles) {
+            if (isContains(position, obstacle))
+                return true;
+        }
+        return false;
     }
 
     private synchronized void moveEnemy(Character enemy, Point destination) {
         double direction = angleBetweenPoints(enemy.getPosition(), destination);
         Point newPosition = moveByDirection(enemy.getPosition(), direction, ENEMY_VELOCITY);
-        if (!isCollision(newPosition.x, newPosition.y))
+        if (isEnemyHit(enemy.getHitBox()))
+            enemies.remove(enemy);
+        if (!isCollisionObstacle(new Point(newPosition.x, newPosition.y)))
             enemy.setPosition(newPosition);
     }
 
     public void shoot(Point destination) {
         bullets.add(new Bullet(player.getPosition(), destination));
+    }
+
+    public boolean isEnemyHit(Shape hitBox) {
+        for (Bullet bullet: bullets)
+            if (isContains(bullet.getPosition(), hitBox))
+                return true;
+        return false;
     }
 
     private synchronized void moveBullets() {
@@ -102,7 +104,7 @@ public class Model {
                 Bullet bullet = iterator.next();
                 Point position = bullet.getPosition();
                 bullet.setPosition(moveByDirection(position, bullet.getDirection(), BULLET_VELOCITY));
-                if (isCollision(position.x, position.y)) {
+                if (isCollisionObstacle(new Point(position.x, position.y))) {
                     iterator.remove();
                 }
         }
