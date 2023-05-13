@@ -6,20 +6,20 @@ import robot.windows.views.GameView;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GameController implements PlayerObservable {
+public class GameController {
     private final GameModel gameModel;
     private final GameView gameVisualizer;
-    public LinkedList<PlayerObserver> observers;
-
+    private final PropertyChangeSupport observers;
     public GameController() {
         this.gameModel = new GameModel();
         this.gameVisualizer = new GameView();
-        this.observers = new LinkedList<>();
+        this.observers = new PropertyChangeSupport(this);
         gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets);
         setUpThreads();
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -74,8 +74,8 @@ public class GameController implements PlayerObservable {
         }
         if (!gameModel.isCollisionObstacle(new Point(posX, posY))) {
             Point newPos = new Point(posX, posY);
+            observers.firePropertyChange("playerLocation", playerPosition, newPos);
             gameModel.player.setPosition(newPos);
-            updateLocation(newPos);
         }
     }
 
@@ -88,14 +88,7 @@ public class GameController implements PlayerObservable {
         return gameVisualizer;
     }
 
-    @Override
-    public void updateLocation(Point location) {
-        for (PlayerObserver playerObserver: observers)
-            playerObserver.updateLocation(location);
-    }
-
-    @Override
-    public void addPlayerObserver(PlayerObserver observer) {
-        observers.add(observer);
+    public void addPlayerObserver(PropertyChangeListener observer) {
+        observers.addPropertyChangeListener(observer);
     }
 }
