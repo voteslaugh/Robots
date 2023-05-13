@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GameController implements PlayerObserved{
+public class GameController implements PlayerObservable {
     private final GameModel gameModel;
     private final GameView gameVisualizer;
     public LinkedList<PlayerObserver> observers;
