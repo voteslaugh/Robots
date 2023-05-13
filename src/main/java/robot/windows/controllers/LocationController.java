@@ -13,9 +13,17 @@ public class LocationController implements PropertyChangeListener {
         this.locationView = new LocationView();
     }
 
+    public void setText(String text) {
+        locationView.location.setText(text);
+    }
+
+    public String convertToString(Point p) {
+        return String.format("X: %d, Y: %d", p.x, p.y);
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         Point newLocation = (Point) evt.getNewValue();
-        locationView.location.setText(String.format("X: %d, Y: %d", newLocation.x, newLocation.y));
+        setText(convertToString(newLocation));
     }
 }

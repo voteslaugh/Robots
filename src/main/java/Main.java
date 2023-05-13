@@ -1,7 +1,10 @@
 import robot.MainApplicationFrame;
+import robot.windows.EnemiesDistanceWindow;
 import robot.windows.GameWindow;
 import robot.windows.LogWindow;
 import robot.windows.PlayerLocationWindow;
+import robot.windows.controllers.DistanceController;
+import robot.windows.controllers.LocationController;
 
 import java.awt.*;
 import java.util.ResourceBundle;
@@ -23,11 +26,18 @@ public class Main
       GameWindow gameWindow = new GameWindow(localeBundle, preferences);
       LogWindow logWindow = new LogWindow(localeBundle, preferences);
       PlayerLocationWindow locationWindow = new PlayerLocationWindow(localeBundle, preferences);
+      EnemiesDistanceWindow distanceWindow = new EnemiesDistanceWindow(localeBundle, preferences);
 
+      LocationController locationController = locationWindow.locationController;
+      locationController.setText(locationController.convertToString(gameWindow.getPlayerPosition()));
       gameWindow.gameController.addPlayerObserver(locationWindow.locationController);
 
+      DistanceController distanceController = distanceWindow.distanceController;
+      distanceController.setText(distanceController.convertToString(gameWindow.gameController.getModel().getDistancesToEnemies()));
+      gameWindow.gameController.getModel().addEnemiesObserver(distanceController);
+
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame(localeBundle, preferences, gameWindow, logWindow, locationWindow);
+        MainApplicationFrame frame = new MainApplicationFrame(localeBundle, preferences, gameWindow, logWindow, locationWindow, distanceWindow);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);

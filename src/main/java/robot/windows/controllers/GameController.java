@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 public class GameController {
     private final GameModel gameModel;
     private final GameView gameVisualizer;
-    private final PropertyChangeSupport observers;
+    private final PropertyChangeSupport playerObservers;
     public GameController() {
         this.gameModel = new GameModel();
         this.gameVisualizer = new GameView();
-        this.observers = new PropertyChangeSupport(this);
+        this.playerObservers = new PropertyChangeSupport(this);
         gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets);
         setUpThreads();
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -74,8 +75,10 @@ public class GameController {
         }
         if (!gameModel.isCollisionObstacle(new Point(posX, posY))) {
             Point newPos = new Point(posX, posY);
-            observers.firePropertyChange("playerLocation", playerPosition, newPos);
+            LinkedList<Integer> oldDistances = gameModel.getDistancesToEnemies();
+            playerObservers.firePropertyChange("playerLocation", playerPosition, newPos);
             gameModel.player.setPosition(newPos);
+            gameModel.enemiesObservers.firePropertyChange("enemiesDistance", gameModel.getDistancesToEnemies(), oldDistances);
         }
     }
 
@@ -88,7 +91,11 @@ public class GameController {
         return gameVisualizer;
     }
 
+    public GameModel getModel() {
+        return gameModel;
+    }
+
     public void addPlayerObserver(PropertyChangeListener observer) {
-        observers.addPropertyChangeListener(observer);
+        playerObservers.addPropertyChangeListener(observer);
     }
 }

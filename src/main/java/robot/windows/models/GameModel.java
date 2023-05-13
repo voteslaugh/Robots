@@ -5,6 +5,8 @@ import robot.windows.components.Character;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,12 +17,14 @@ public class GameModel {
     public Set<Character> enemies;
     public HashSet<Shape> obstacles;
     public Set<Bullet> bullets;
+    public final PropertyChangeSupport enemiesObservers;
     public final double ENEMY_VELOCITY = 3;
     public final double PLAYER_VELOCITY = 4;
     public final double BULLET_VELOCITY = 4;
 
     public GameModel() {
         player = new Character(new Point(70, 150), 0, 20);
+        enemiesObservers = new PropertyChangeSupport(this);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
         setUpEnemies();
@@ -58,8 +62,11 @@ public class GameModel {
     public void onModelUpdateEvent() {
         for (Character enemy : enemies) {
             Point destination = player.getPosition();
-            if (!(enemy.getPosition().distance(destination) < 2))
+            if (!(enemy.getPosition().distance(destination) < 2)) {
+                LinkedList<Integer> oldDistances = getDistancesToEnemies();
                 moveEnemy(enemy, destination);
+                enemiesObservers.firePropertyChange("enemiesDistance", getDistancesToEnemies(), oldDistances);
+            }
         }
         moveBullets();
     }
@@ -112,5 +119,17 @@ public class GameModel {
                 iterator.remove();
             }
         }
+    }
+
+    public LinkedList<Integer> getDistancesToEnemies() {
+        LinkedList<Integer> positions = new LinkedList<>();
+        for (Character enemy : enemies) {
+            positions.add((int) player.getPosition().distance(enemy.getPosition()));
+        }
+        return positions;
+    }
+
+    public void addEnemiesObserver(PropertyChangeListener observer) {
+        enemiesObservers.addPropertyChangeListener(observer);
     }
 }
