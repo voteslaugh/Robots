@@ -2,7 +2,7 @@ package robot.windows;
 
 import robot.windows.log.Logger;
 import robot.windows.log.LogVisualizer;
-import robot.windows.gui.InternalFrame;
+import robot.windows.components.gui.InternalFrame;
 
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;

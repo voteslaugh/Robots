@@ -1,10 +1,10 @@
 package robot;
 
-import robot.windows.gui.*;
-import robot.windows.gui.Frame;
-import robot.windows.gui.Menu;
-import robot.windows.gui.MenuBar;
-import robot.windows.gui.MenuItem;
+import robot.windows.components.gui.*;
+import robot.windows.components.gui.Frame;
+import robot.windows.components.gui.Menu;
+import robot.windows.components.gui.MenuBar;
+import robot.windows.components.gui.MenuItem;
 
 import java.awt.event.KeyEvent;
 import java.io.*;

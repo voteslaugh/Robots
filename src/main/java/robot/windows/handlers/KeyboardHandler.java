@@ -1,4 +1,4 @@
-package robot.windows.game.components;
+package robot.windows.handlers;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

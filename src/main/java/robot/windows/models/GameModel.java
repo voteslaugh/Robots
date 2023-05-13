@@ -1,7 +1,7 @@
-package robot.windows.game;
+package robot.windows.models;
 
-import robot.windows.game.world.Bullet;
-import robot.windows.game.world.Character;
+import robot.windows.components.Bullet;
+import robot.windows.components.Character;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -9,17 +9,17 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Model {
+public class GameModel {
 
-    Character player;
-    Set<Character> enemies;
-    HashSet<Shape> obstacles;
-    Set<Bullet> bullets;
-    final double ENEMY_VELOCITY = 3;
-    final double PLAYER_VELOCITY = 4;
-    final double BULLET_VELOCITY = 4;
+    public Character player;
+    public Set<Character> enemies;
+    public HashSet<Shape> obstacles;
+    public Set<Bullet> bullets;
+    public final double ENEMY_VELOCITY = 3;
+    public final double PLAYER_VELOCITY = 4;
+    public final double BULLET_VELOCITY = 4;
 
-    public Model() {
+    public GameModel() {
         player = new Character(new Point(70, 150), 0, 20);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
@@ -55,7 +55,7 @@ public class Model {
         return Math.atan2(p2.y - p1.y, p2.x - p1.x);
     }
 
-    protected void onModelUpdateEvent() {
+    public void onModelUpdateEvent() {
         for (Character enemy : enemies) {
             Point destination = player.getPosition();
             if (!(enemy.getPosition().distance(destination) < 2))

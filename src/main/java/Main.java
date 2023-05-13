@@ -1,6 +1,7 @@
 import robot.MainApplicationFrame;
 import robot.windows.GameWindow;
 import robot.windows.LogWindow;
+import robot.windows.PlayerLocationWindow;
 
 import java.awt.*;
 import java.util.ResourceBundle;
@@ -21,9 +22,12 @@ public class Main
 
       GameWindow gameWindow = new GameWindow(localeBundle, preferences);
       LogWindow logWindow = new LogWindow(localeBundle, preferences);
+      PlayerLocationWindow locationWindow = new PlayerLocationWindow(localeBundle, preferences);
+
+      gameWindow.gameController.addObserver(locationWindow.locationController);
 
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame(localeBundle, preferences, gameWindow, logWindow);
+        MainApplicationFrame frame = new MainApplicationFrame(localeBundle, preferences, gameWindow, logWindow, locationWindow);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);

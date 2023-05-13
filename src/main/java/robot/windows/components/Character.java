@@ -1,4 +1,4 @@
-package robot.windows.game.world;
+package robot.windows.components;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
