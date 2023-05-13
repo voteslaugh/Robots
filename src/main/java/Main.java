@@ -24,7 +24,7 @@ public class Main
       LogWindow logWindow = new LogWindow(localeBundle, preferences);
       PlayerLocationWindow locationWindow = new PlayerLocationWindow(localeBundle, preferences);
 
-      gameWindow.gameController.addObserver(locationWindow.locationController);
+      gameWindow.gameController.addPlayerObserver(locationWindow.locationController);
 
       SwingUtilities.invokeLater(() -> {
         MainApplicationFrame frame = new MainApplicationFrame(localeBundle, preferences, gameWindow, logWindow, locationWindow);

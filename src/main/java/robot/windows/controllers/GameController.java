@@ -95,7 +95,7 @@ public class GameController implements PlayerObserved{
     }
 
     @Override
-    public void addObserver(PlayerObserver observer) {
+    public void addPlayerObserver(PlayerObserver observer) {
         observers.add(observer);
     }
 }
