@@ -32,9 +32,10 @@ public class Main
       locationController.setText(locationController.convertToString(gameWindow.getPlayerPosition()));
       gameWindow.gameController.addPlayerObserver(locationWindow.locationController);
 
-      DistanceController distanceController = distanceWindow.distanceController;
+      DistanceController distanceController = new DistanceController();
       distanceController.setText(distanceController.convertToString(gameWindow.gameController.getModel().getDistancesToEnemies()));
       gameWindow.gameController.getModel().addEnemiesObserver(distanceController);
+      distanceWindow.add(distanceController.distanceView);
 
       SwingUtilities.invokeLater(() -> {
         MainApplicationFrame frame = new MainApplicationFrame(localeBundle, preferences, gameWindow, logWindow, locationWindow, distanceWindow);

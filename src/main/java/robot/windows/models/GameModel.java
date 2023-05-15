@@ -20,7 +20,7 @@ public class GameModel {
     public final PropertyChangeSupport enemiesObservers;
     public final double ENEMY_VELOCITY = 3;
     public final double PLAYER_VELOCITY = 4;
-    public final double BULLET_VELOCITY = 4;
+    public final double BULLET_VELOCITY = 6;
 
     public GameModel() {
         player = new Character(new Point(70, 150), 0, 20);
@@ -49,9 +49,9 @@ public class GameModel {
 
     public void setUpEnemies() {
         enemies.addAll(List.of(
-                new Character(new Point(880, 150), 0, 60),
-                new Character(new Point(880, 600), 0, 30)
-//                new Character(new Point(600, 600), 0, 10)
+                new Character(new Point(70, 40), 0, 60),
+                new Character(new Point(880, 600), 0, 30),
+                new Character(new Point(600, 600), 0, 10)
         ));
     }
 
@@ -60,15 +60,8 @@ public class GameModel {
     }
 
     public void onModelUpdateEvent() {
-        for (Character enemy : enemies) {
-            Point destination = player.getPosition();
-            if (!(enemy.getPosition().distance(destination) < 2)) {
-                LinkedList<Integer> oldDistances = getDistancesToEnemies();
-                moveEnemy(enemy, destination);
-                enemiesObservers.firePropertyChange("enemiesDistance", getDistancesToEnemies(), oldDistances);
-            }
-        }
         moveBullets();
+        moveEnemiesToPlayer();
     }
 
     private synchronized Point moveByDirection(Point start, double direction, double velocity) {
@@ -89,11 +82,26 @@ public class GameModel {
         return false;
     }
 
+    private synchronized void moveEnemiesToPlayer() {
+        Point destination = player.getPosition();
+        Iterator<Character> iterator = enemies.iterator();
+        LinkedList<Integer> oldDistances = getDistancesToEnemies();
+        while (iterator.hasNext()) {
+            Character enemy = iterator.next();
+            if (isEnemyHit(enemy.getHitBox())) {
+                iterator.remove();
+            }
+            if (!(enemy.getPosition().distance(destination) < 2)) {
+                moveEnemy(enemy, destination);
+            }
+        }
+        enemiesObservers.firePropertyChange("enemiesDistance", oldDistances, getDistancesToEnemies());
+    }
+
     private synchronized void moveEnemy(Character enemy, Point destination) {
-        double direction = angleBetweenPoints(enemy.getPosition(), destination);
-        Point newPosition = moveByDirection(enemy.getPosition(), direction, ENEMY_VELOCITY);
-        if (isEnemyHit(enemy.getHitBox()))
-            enemies.remove(enemy);
+        Point oldPosition = enemy.getPosition();
+        double direction = angleBetweenPoints(oldPosition, destination);
+        Point newPosition = moveByDirection(oldPosition, direction, ENEMY_VELOCITY);
         if (!isCollisionObstacle(new Point(newPosition.x, newPosition.y)))
             enemy.setPosition(newPosition);
     }
