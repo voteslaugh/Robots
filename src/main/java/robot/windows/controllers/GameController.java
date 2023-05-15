@@ -36,7 +36,7 @@ public class GameController {
     private void handlePlayerAction() {
         Point oldPosition = gameModel.player.getPosition();
         Point newPosition = getNewPlayerPosition(oldPosition, gameModel.PLAYER_VELOCITY);
-        if (!gameModel.isCollisionObstacle(newPosition)) {
+        if (!gameModel.isCollisionObstacle(newPosition, gameModel.player.getHitBoxRadius())) {
             LinkedList<Integer> oldDistances = gameModel.getDistancesToEnemies();
             playerObservers.firePropertyChange("playerLocation", oldDistances, newPosition);
             gameModel.player.setPosition(newPosition);

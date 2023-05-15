@@ -7,10 +7,12 @@ import java.awt.*;
 public class Bullet {
     private Point position;
     private final double direction;
+    private final int hitBoxRadius;
 
     public Bullet(Point start, Point destination) {
         this.position = start;
         this.direction = GameModel.angleBetweenPoints(start, destination);
+        this.hitBoxRadius = 1;
     }
 
     public void setPosition(Point position) {
@@ -23,5 +25,9 @@ public class Bullet {
 
     public double getDirection() {
         return direction;
+    }
+
+    public int getHitBoxRadius() {
+        return hitBoxRadius;
     }
 }

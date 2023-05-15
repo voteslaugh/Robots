@@ -49,9 +49,9 @@ public class GameModel {
 
     public void setUpEnemies() {
         enemies.addAll(List.of(
-                new Character(new Point(70, 40), 0, 60),
-                new Character(new Point(880, 600), 0, 30),
-                new Character(new Point(600, 600), 0, 10)
+                new Character(new Point(840, 200), 0, 60),
+                new Character(new Point(840, 600), 0, 30),
+                new Character(new Point(560, 600), 0, 10)
         ));
     }
 
@@ -70,16 +70,21 @@ public class GameModel {
         return new Point((int) (start.getX() + velocityX), (int) ((start.getY() + velocityY)));
     }
 
-    public boolean isContains(Point position, Shape shape) {
-        return shape.contains(position);
+    public boolean isIntersects(Shape shape1, Shape shape2) {
+        return shape1.intersects((Rectangle2D) shape2);
     }
 
-    public boolean isCollisionObstacle(Point position) {
+    public boolean isCollisionObstacle(Point position, int hitBoxRadius) {
         for (Shape obstacle : obstacles) {
-            if (isContains(position, obstacle))
+            if (isIntersects(getHitBoxShape(position, hitBoxRadius), obstacle))
                 return true;
         }
         return false;
+    }
+
+    public Shape getHitBoxShape(Point position, int hitBoxRadius) {
+        Point drawPosition = new Point(position.x - hitBoxRadius / 2, position.y - hitBoxRadius / 2);
+        return new Rectangle2D.Double(drawPosition.x, drawPosition.y, hitBoxRadius, hitBoxRadius);
     }
 
     private synchronized void moveEnemiesToPlayer() {
@@ -102,7 +107,7 @@ public class GameModel {
         Point oldPosition = enemy.getPosition();
         double direction = angleBetweenPoints(oldPosition, destination);
         Point newPosition = moveByDirection(oldPosition, direction, ENEMY_VELOCITY);
-        if (!isCollisionObstacle(new Point(newPosition.x, newPosition.y)))
+        if (!isCollisionObstacle(newPosition, enemy.getHitBoxRadius()))
             enemy.setPosition(newPosition);
     }
 
@@ -112,7 +117,7 @@ public class GameModel {
 
     public boolean isEnemyHit(Shape hitBox) {
         for (Bullet bullet : bullets)
-            if (isContains(bullet.getPosition(), hitBox))
+            if (isIntersects(getHitBoxShape(bullet.getPosition(), bullet.getHitBoxRadius()), hitBox))
                 return true;
         return false;
     }
@@ -123,7 +128,7 @@ public class GameModel {
             Bullet bullet = iterator.next();
             Point position = bullet.getPosition();
             bullet.setPosition(moveByDirection(position, bullet.getDirection(), BULLET_VELOCITY));
-            if (isCollisionObstacle(new Point(position.x, position.y))) {
+            if (isCollisionObstacle(position, bullet.getHitBoxRadius())) {
                 iterator.remove();
             }
         }
