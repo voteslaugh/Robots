@@ -23,7 +23,7 @@ public class GameModel {
     public final double BULLET_VELOCITY = 6;
 
     public GameModel() {
-        player = new Character(new Point(70, 150), 0, 20);
+        player = new Character(new Point(390, 254), 0, 20);
         enemiesObservers = new PropertyChangeSupport(this);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
