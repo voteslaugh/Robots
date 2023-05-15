@@ -5,15 +5,37 @@ import robot.windows.components.Character;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.util.HashSet;
 import java.util.Set;
 
 public class DrawHandler extends JPanel {
 
+    protected double zoomLevel;
+
     public DrawHandler() {
         super(true);
         setFocusable(true);
+        zoomLevel = 1;
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_EQUALS -> setZoomLevel(getZoomLevel() + 0.1);
+                    case KeyEvent.VK_MINUS -> setZoomLevel(getZoomLevel() - 0.1);
+                }
+            }
+        });
+    }
+
+    public void setZoomLevel(double zoomLevel) {
+        this.zoomLevel = zoomLevel;
+    }
+
+    public double getZoomLevel() {
+        return zoomLevel;
     }
 
     private static void fillCircle(Graphics g, int centerX, int centerY, int diameter) {
@@ -28,7 +50,9 @@ public class DrawHandler extends JPanel {
         for (Character enemy : enemies) {
             int posX = enemy.getPosition().x;
             int posY = enemy.getPosition().y;
-            AffineTransform t = AffineTransform.getRotateInstance(enemy.getDirection(), posX, posY);
+            AffineTransform t = new AffineTransform();
+            t.rotate(enemy.getDirection(), posX, posY);
+            t.scale(zoomLevel, zoomLevel);
             int hitBoxRadius = enemy.getHitBoxRadius();
             g.setTransform(t);
             g.setColor(Color.RED);
@@ -47,7 +71,9 @@ public class DrawHandler extends JPanel {
         int posX = player.getPosition().x;
         int posY = player.getPosition().y;
         int hitBoxRadius = player.getHitBoxRadius();
-        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
+        AffineTransform t = new AffineTransform();
+        t.rotate(player.getDirection(), posX, posY);
+        t.scale(zoomLevel, zoomLevel);
         g.setTransform(t);
         g.setColor(Color.GREEN);
         g.fillRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
@@ -67,7 +93,9 @@ public class DrawHandler extends JPanel {
         for (Bullet bullet : bullets) {
             int posX = bullet.getPosition().x;
             int posY = bullet.getPosition().y;
-            AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
+            AffineTransform t = new AffineTransform();
+            t.rotate(0, 0, 0);
+            t.scale(zoomLevel, zoomLevel);
             g.setTransform(t);
             g.setColor(Color.GREEN);
             fillCircle(g, posX, posY, 5);
