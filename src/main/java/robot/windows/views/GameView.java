@@ -3,6 +3,8 @@ package robot.windows.views;
 import robot.windows.handlers.DrawHandler;
 import robot.windows.components.Bullet;
 import robot.windows.components.Character;
+import robot.windows.handlers.KeyboardHandler;
+import robot.windows.handlers.MouseHandler;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -14,6 +16,16 @@ public class GameView extends DrawHandler {
     private Set<Character> enemies;
     private HashSet<Shape> obstacles;
     private Set<Bullet> bullets;
+    public final KeyboardHandler keyboard;
+    public final MouseHandler mouse;
+
+    public GameView(KeyboardHandler keyboardHandler, MouseHandler mouseHandler) {
+        keyboard = keyboardHandler;
+        mouse = mouseHandler;
+        addKeyListener(keyboard);
+        addMouseListener(mouse);
+        addMouseMotionListener(mouse);
+    }
 
     public void setPaintings(Character player, Set<Character> enemies, HashSet<Shape> obstacles, Set<Bullet> bullets) {
         this.player = player;

@@ -1,9 +1,9 @@
 package robot.windows.handlers;
 
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-public class KeyboardHandler implements KeyListener {
+public class KeyboardHandler extends KeyAdapter {
 
     private boolean upPressed = false;
     private boolean downPressed = false;
@@ -11,15 +11,8 @@ public class KeyboardHandler implements KeyListener {
     private boolean rightPressed = false;
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
     public void keyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-
-        switch (keyCode) {
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> upPressed = true;
             case KeyEvent.VK_A -> leftPressed = true;
             case KeyEvent.VK_S -> downPressed = true;
@@ -29,9 +22,7 @@ public class KeyboardHandler implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-
-        switch (keyCode) {
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> upPressed = false;
             case KeyEvent.VK_A -> leftPressed = false;
             case KeyEvent.VK_S -> downPressed = false;

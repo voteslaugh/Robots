@@ -10,12 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DrawHandler extends JPanel {
-    public KeyboardHandler keyboard;
 
     public DrawHandler() {
         super(true);
-        keyboard = new KeyboardHandler();
-        addKeyListener(keyboard);
         setFocusable(true);
     }
 

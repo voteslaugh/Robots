@@ -50,8 +50,8 @@ public class GameModel {
     public void setUpEnemies() {
         enemies.addAll(List.of(
                 new Character(new Point(880, 150), 0, 60),
-                new Character(new Point(880, 600), 0, 30),
-                new Character(new Point(600, 600), 0, 10)
+                new Character(new Point(880, 600), 0, 30)
+//                new Character(new Point(600, 600), 0, 10)
         ));
     }
 
