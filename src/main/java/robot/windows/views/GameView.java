@@ -38,7 +38,6 @@ public class GameView extends DrawHandler {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.scale(zoomLevel, zoomLevel);
         drawEnemies(g2d, enemies);
         drawPlayer(g2d, player);
         drawObstacles(g2d, obstacles);
