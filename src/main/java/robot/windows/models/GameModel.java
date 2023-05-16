@@ -21,6 +21,7 @@ public class GameModel {
     public final double ENEMY_VELOCITY = 3;
     public final double PLAYER_VELOCITY = 4;
     public final double BULLET_VELOCITY = 6;
+    private final Point spawnPosition = new Point(794, 86);
 
     public GameModel() {
         player = new Character(new Point(390, 254), 0, 20);
@@ -101,6 +102,10 @@ public class GameModel {
             }
         }
         enemiesObservers.firePropertyChange("enemiesDistance", oldDistances, getDistancesToEnemies());
+    }
+
+    public void spawnEnemy() {
+        enemies.add(new Character(spawnPosition, 0, 40));
     }
 
     private synchronized void moveEnemy(Character enemy, Point destination) {
