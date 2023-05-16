@@ -17,13 +17,20 @@ public class GameController {
     private final GameView gameVisualizer;
     private final ScheduledExecutorService threadPool;
     private final PropertyChangeSupport playerObservers;
+    private final KeyboardHandler keyboardHandler;
+    private final MouseHandler mouseHandler;
     public GameController() {
         this.gameModel = new GameModel();
-        this.gameVisualizer = new GameView(new KeyboardHandler(), new MouseHandler());
+        keyboardHandler = new KeyboardHandler();
+        mouseHandler = new MouseHandler();
+        this.gameVisualizer = new GameView();
+        gameVisualizer.addKeyListener(keyboardHandler);
+        gameVisualizer.addMouseListener(mouseHandler);
+        gameVisualizer.addMouseMotionListener(mouseHandler);
+        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets);
         threadPool = Executors.newScheduledThreadPool(4);
         setUpThreads();
         this.playerObservers = new PropertyChangeSupport(this);
-        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets);
     }
 
     private void setUpThreads() {
@@ -40,8 +47,8 @@ public class GameController {
     }
 
     private void handleMouseAction() {
-        if (gameVisualizer.mouse.isLMBPressed())
-            gameModel.shoot(gameVisualizer.mouse.getPosition());
+        if (mouseHandler.isLMBPressed())
+            gameModel.shoot(mouseHandler.getPosition());
     }
 
     private void handleKeyboardAction() {
@@ -60,13 +67,13 @@ public class GameController {
         int posX = position.x;
         int posY = position.y;
 
-        if (gameVisualizer.keyboard.isUpPressed())
+        if (keyboardHandler.isUpPressed())
             posY -= velocity;
-        if (gameVisualizer.keyboard.isDownPressed())
+        if (keyboardHandler.isDownPressed())
             posY += velocity;
-        if (gameVisualizer.keyboard.isLeftPressed())
+        if (keyboardHandler.isLeftPressed())
             posX -= velocity;
-        if (gameVisualizer.keyboard.isRightPressed())
+        if (keyboardHandler.isRightPressed())
             posX += velocity;
 
         return new Point(posX, posY);

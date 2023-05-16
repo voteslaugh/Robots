@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,11 +49,7 @@ public class DrawHandler extends JPanel {
         for (Character enemy : enemies) {
             int posX = enemy.getPosition().x;
             int posY = enemy.getPosition().y;
-            AffineTransform t = new AffineTransform();
-            t.rotate(enemy.getDirection(), posX, posY);
-            t.scale(zoomLevel, zoomLevel);
             int hitBoxRadius = enemy.getHitBoxRadius();
-            g.setTransform(t);
             g.setColor(Color.RED);
             fillCircle(g, posX, posY, hitBoxRadius);
             g.setColor(Color.BLACK);
@@ -71,10 +66,6 @@ public class DrawHandler extends JPanel {
         int posX = player.getPosition().x;
         int posY = player.getPosition().y;
         int hitBoxRadius = player.getHitBoxRadius();
-        AffineTransform t = new AffineTransform();
-        t.rotate(player.getDirection(), posX, posY);
-        t.scale(zoomLevel, zoomLevel);
-        g.setTransform(t);
         g.setColor(Color.GREEN);
         g.fillRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
         g.setColor(Color.BLACK);
@@ -93,10 +84,6 @@ public class DrawHandler extends JPanel {
         for (Bullet bullet : bullets) {
             int posX = bullet.getPosition().x;
             int posY = bullet.getPosition().y;
-            AffineTransform t = new AffineTransform();
-            t.rotate(0, 0, 0);
-            t.scale(zoomLevel, zoomLevel);
-            g.setTransform(t);
             g.setColor(Color.GREEN);
             fillCircle(g, posX, posY, 5);
             g.setColor(Color.BLACK);
