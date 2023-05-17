@@ -2,6 +2,7 @@ package robot.windows.controllers;
 
 import robot.windows.handlers.KeyboardHandler;
 import robot.windows.handlers.MouseHandler;
+import robot.windows.handlers.RandomHandler;
 import robot.windows.models.GameModel;
 import robot.windows.views.GameView;
 
@@ -60,7 +61,8 @@ public class GameController {
     }
 
     private void onSpawnEvent() {
-        gameModel.spawnEnemy();
+        int random = RandomHandler.getRandomWithStep(50, 150, 10);
+        gameModel.spawnEnemy(random, random);
     }
 
     public Point getNewPlayerPosition(Point position, double velocity) {

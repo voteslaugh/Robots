@@ -1,7 +1,8 @@
 package robot.windows.models;
 
-import robot.windows.components.Bullet;
-import robot.windows.components.Character;
+import robot.windows.components.world.Bullet;
+import robot.windows.components.world.Character;
+import robot.windows.handlers.RandomHandler;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -24,7 +25,7 @@ public class GameModel {
     private final Point spawnPosition = new Point(794, 86);
 
     public GameModel() {
-        player = new Character(new Point(390, 254), 0, 20);
+        player = new Character(new Point(390, 254), 0, 20, 1000);
         enemiesObservers = new PropertyChangeSupport(this);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
@@ -50,9 +51,9 @@ public class GameModel {
 
     public void setUpEnemies() {
         enemies.addAll(List.of(
-                new Character(new Point(840, 200), 0, 60),
-                new Character(new Point(840, 600), 0, 30),
-                new Character(new Point(560, 600), 0, 10)
+                new Character(new Point(840, 200), 0, 60, 500),
+                new Character(new Point(840, 600), 0, 30, 300),
+                new Character(new Point(560, 600), 0, 10, 100)
         ));
     }
 
@@ -104,8 +105,8 @@ public class GameModel {
         enemiesObservers.firePropertyChange("enemiesDistance", oldDistances, getDistancesToEnemies());
     }
 
-    public void spawnEnemy() {
-        enemies.add(new Character(spawnPosition, 0, 40));
+    public void spawnEnemy(int hitBoxRadius, int healthPoints) {
+        enemies.add(new Character(spawnPosition, 0, hitBoxRadius, healthPoints));
     }
 
     private synchronized void moveEnemy(Character enemy, Point destination) {

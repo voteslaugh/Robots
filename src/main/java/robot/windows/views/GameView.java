@@ -1,8 +1,8 @@
 package robot.windows.views;
 
 import robot.windows.handlers.DrawHandler;
-import robot.windows.components.Bullet;
-import robot.windows.components.Character;
+import robot.windows.components.world.Bullet;
+import robot.windows.components.world.Character;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -28,7 +28,7 @@ public class GameView extends DrawHandler {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform t = new AffineTransform();
-        t.translate(player.getPosition().getX(), player.getPosition().getY());
+        t.translate(player.getPosition().x, player.getPosition().y);
         t.rotate(player.getDirection());
         t.scale(zoomLevel, zoomLevel);
         t.translate(-player.getPosition().x, -player.getPosition().y);

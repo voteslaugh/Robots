@@ -1,11 +1,9 @@
 package robot.windows;
 
-import robot.windows.components.Character;
 import robot.windows.controllers.GameController;
 import robot.windows.components.gui.InternalFrame;
 
 import java.awt.*;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 

@@ -1,4 +1,4 @@
-package robot.windows.components;
+package robot.windows.components.world;
 
 import robot.windows.models.GameModel;
 

@@ -1,7 +1,7 @@
 package robot.windows.handlers;
 
-import robot.windows.components.Bullet;
-import robot.windows.components.Character;
+import robot.windows.components.world.Bullet;
+import robot.windows.components.world.Character;
 
 import javax.swing.*;
 import java.awt.*;

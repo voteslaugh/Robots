@@ -1,4 +1,4 @@
-package robot.windows.components;
+package robot.windows.components.world;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -7,11 +7,13 @@ public class Character {
     private Point position;
     private volatile double direction;
     private final int hitBoxRadius;
+    public int healthPoints;
 
-    public Character(Point position, double direction, int hitBoxRadius) {
+    public Character(Point position, double direction, int hitBoxRadius, int healthPoints) {
         this.position = position;
         this.direction = direction;
         this.hitBoxRadius = hitBoxRadius;
+        this.healthPoints = healthPoints;
     }
 
     public Shape getHitBox() {
