@@ -2,7 +2,6 @@ package robot.windows.models;
 
 import robot.windows.components.world.Bullet;
 import robot.windows.components.world.Character;
-import robot.windows.handlers.RandomHandler;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -18,7 +17,7 @@ public class GameModel {
     public Set<Character> enemies;
     public HashSet<Shape> obstacles;
     public Set<Bullet> bullets;
-    public final PropertyChangeSupport enemiesObservers;
+    public final PropertyChangeSupport modelObservers;
     public final double ENEMY_VELOCITY = 3;
     public final double PLAYER_VELOCITY = 4;
     public final double BULLET_VELOCITY = 6;
@@ -26,7 +25,7 @@ public class GameModel {
 
     public GameModel() {
         player = new Character(new Point(390, 254), 0, 20, 1000);
-        enemiesObservers = new PropertyChangeSupport(this);
+        modelObservers = new PropertyChangeSupport(this);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
         setUpEnemies();
@@ -102,7 +101,7 @@ public class GameModel {
                 moveEnemy(enemy, destination);
             }
         }
-        enemiesObservers.firePropertyChange("enemiesDistance", oldDistances, getDistancesToEnemies());
+        modelObservers.firePropertyChange("enemyDistance", oldDistances, getDistancesToEnemies());
     }
 
     public void spawnEnemy(int hitBoxRadius, int healthPoints) {
@@ -140,7 +139,7 @@ public class GameModel {
         }
     }
 
-    public LinkedList<Integer> getDistancesToEnemies() {
+    public synchronized LinkedList<Integer> getDistancesToEnemies() {
         LinkedList<Integer> positions = new LinkedList<>();
         for (Character enemy : enemies) {
             positions.add((int) player.getPosition().distance(enemy.getPosition()));
@@ -148,7 +147,12 @@ public class GameModel {
         return positions;
     }
 
-    public void addEnemiesObserver(PropertyChangeListener observer) {
-        enemiesObservers.addPropertyChangeListener(observer);
+    public void addModelObserver(PropertyChangeListener observer) {
+        modelObservers.addPropertyChangeListener(observer);
+    }
+
+    public void setPlayerPosition(Point newPosition) {
+        modelObservers.firePropertyChange("playerPosition", player.getPosition(), newPosition);
+        player.setPosition(newPosition);
     }
 }

@@ -23,7 +23,9 @@ public class LocationController implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        Point newLocation = (Point) evt.getNewValue();
-        setText(convertToString(newLocation));
+        if (evt.getPropertyName().equals("playerPosition")) {
+            Point newLocation = (Point) evt.getNewValue();
+            setText(convertToString(newLocation));
+        }
     }
 }

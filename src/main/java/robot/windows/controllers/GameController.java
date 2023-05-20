@@ -17,7 +17,6 @@ public class GameController {
     private final GameModel gameModel;
     private final GameView gameVisualizer;
     private final ScheduledExecutorService threadPool;
-    private final PropertyChangeSupport playerObservers;
     private final KeyboardHandler keyboardHandler;
     private final MouseHandler mouseHandler;
     public GameController() {
@@ -31,7 +30,6 @@ public class GameController {
         gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets);
         threadPool = Executors.newScheduledThreadPool(4);
         setUpThreads();
-        this.playerObservers = new PropertyChangeSupport(this);
     }
 
     private void setUpThreads() {
@@ -40,7 +38,6 @@ public class GameController {
         threadPool.scheduleAtFixedRate(this::handlePlayerAction, 0, 10, TimeUnit.MILLISECONDS);
         threadPool.scheduleAtFixedRate(this::onSpawnEvent, 0, 3, TimeUnit.SECONDS);
     }
-
 
     private void handlePlayerAction() {
         handleMouseAction();
@@ -56,7 +53,7 @@ public class GameController {
         Point oldPosition = gameModel.player.getPosition();
         Point newPosition = getNewPlayerPosition(oldPosition, gameModel.PLAYER_VELOCITY);
         if (!gameModel.isCollisionObstacle(newPosition, gameModel.player.getHitBoxRadius())) {
-            gameModel.player.setPosition(newPosition);
+            gameModel.setPlayerPosition(newPosition);
         }
     }
 
@@ -94,7 +91,4 @@ public class GameController {
         return gameModel;
     }
 
-    public void addPlayerObserver(PropertyChangeListener observer) {
-        playerObservers.addPropertyChangeListener(observer);
-    }
 }

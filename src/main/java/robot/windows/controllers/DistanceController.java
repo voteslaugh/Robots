@@ -29,7 +29,9 @@ public class DistanceController implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        LinkedList<Integer> distances = (LinkedList<Integer>) evt.getNewValue();
-        setText(convertToString(distances));
+        if (evt.getPropertyName().equals("enemyDistance")) {
+            LinkedList<Integer> distances = (LinkedList<Integer>) evt.getNewValue();
+            setText(convertToString(distances));
+        }
     }
 }
