@@ -2,13 +2,10 @@ package robot.windows.controllers;
 
 import robot.windows.handlers.KeyboardHandler;
 import robot.windows.handlers.MouseHandler;
-import robot.windows.handlers.RandomHandler;
 import robot.windows.models.GameModel;
 import robot.windows.views.GameView;
 
 import java.awt.*;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +33,6 @@ public class GameController {
         threadPool.scheduleAtFixedRate(gameModel::onModelUpdateEvent, 0, 10, TimeUnit.MILLISECONDS);
         threadPool.scheduleAtFixedRate(this::repaint, 0, 3, TimeUnit.MILLISECONDS);
         threadPool.scheduleAtFixedRate(this::handlePlayerAction, 0, 10, TimeUnit.MILLISECONDS);
-        threadPool.scheduleAtFixedRate(this::onSpawnEvent, 0, 3, TimeUnit.SECONDS);
     }
 
     private void handlePlayerAction() {
@@ -55,11 +51,6 @@ public class GameController {
         if (!gameModel.isCollisionObstacle(newPosition, gameModel.player.getHitBoxRadius())) {
             gameModel.setPlayerPosition(newPosition);
         }
-    }
-
-    private void onSpawnEvent() {
-        int random = RandomHandler.getRandomWithStep(50, 150, 10);
-        gameModel.spawnEnemy(random, random);
     }
 
     public Point getNewPlayerPosition(Point position, double velocity) {

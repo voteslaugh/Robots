@@ -2,6 +2,7 @@ package robot.windows.models;
 
 import robot.windows.components.world.Bullet;
 import robot.windows.components.world.Character;
+import robot.windows.handlers.RandomHandler;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -31,6 +32,7 @@ public class GameModel {
         setUpEnemies();
         obstacles = new HashSet<>();
         setUpObstacles();
+        setUpSpawn();
     }
 
     public void setUpObstacles() {
@@ -54,6 +56,17 @@ public class GameModel {
                 new Character(new Point(840, 600), 0, 30, 300),
                 new Character(new Point(560, 600), 0, 10, 100)
         ));
+    }
+
+    public void setUpSpawn() {
+        Timer time = new Timer();
+        time.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                int random = RandomHandler.getRandomWithStep(50, 150);
+                spawnEnemy(random, random);
+            }
+        }, 0, 3000);
     }
 
     public static double angleBetweenPoints(Point p1, Point p2) {
