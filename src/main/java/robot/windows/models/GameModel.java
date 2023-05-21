@@ -2,6 +2,8 @@ package robot.windows.models;
 
 import robot.windows.components.world.Bullet;
 import robot.windows.components.world.Character;
+import robot.windows.components.world.Player;
+import robot.windows.components.world.Weapon;
 import robot.windows.handlers.RandomHandler;
 
 import java.awt.*;
@@ -14,23 +16,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameModel {
 
-    public Character player;
+    public Player player;
     public Set<Character> enemies;
     public HashSet<Shape> obstacles;
     public Set<Bullet> bullets;
     public final PropertyChangeSupport modelObservers;
-    public final double ENEMY_VELOCITY = 3;
-    public final double PLAYER_VELOCITY = 4;
     public final double BULLET_VELOCITY = 6;
     private final Point spawnPosition = new Point(794, 86);
+    public int score;
 
     public GameModel() {
-        player = new Character(new Point(390, 254), 0, 20, 1000);
+        player = new Player(new Point(390, 254), 4, 20, 1000, new Weapon(10, 0.05), new Weapon(100, 0.5));
         modelObservers = new PropertyChangeSupport(this);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
         setUpEnemies();
         obstacles = new HashSet<>();
+        score = 0;
         setUpObstacles();
         setUpSpawn();
     }
@@ -52,18 +54,17 @@ public class GameModel {
 
     public void setUpEnemies() {
         enemies.addAll(List.of(
-                new Character(new Point(840, 200), 0, 60, 500),
-                new Character(new Point(840, 600), 0, 30, 300),
-                new Character(new Point(560, 600), 0, 10, 100)
+                new Character(new Point(840, 200), 60, 500),
+                new Character(new Point(840, 600), 30, 300),
+                new Character(new Point(560, 600), 10, 100)
         ));
     }
 
     public void setUpSpawn() {
-        Timer time = new Timer();
-        time.schedule(new TimerTask() {
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                int random = RandomHandler.getRandomWithStep(50, 150);
+                int random = RandomHandler.getRandomWithStep(20, 150);
                 spawnEnemy(random, random);
             }
         }, 0, 3000);
@@ -108,23 +109,28 @@ public class GameModel {
         while (iterator.hasNext()) {
             Character enemy = iterator.next();
             if (isEnemyHit(enemy.getHitBox())) {
-                iterator.remove();
+                if(enemy.reduceHPAndCheckDeath(player.getWeapon().getDamage())) {
+                    iterator.remove();
+                    score += 1;
+                }
             }
-            if (!(enemy.getPosition().distance(destination) < 2)) {
+            if (isIntersects(enemy.getHitBox(), player.getHitBox())) {
+                player.reduceHPAndCheckDeath(20);
+            }
+            else
                 moveEnemy(enemy, destination);
-            }
         }
         modelObservers.firePropertyChange("enemyDistance", oldDistances, getDistancesToEnemies());
     }
 
     public void spawnEnemy(int hitBoxRadius, int healthPoints) {
-        enemies.add(new Character(spawnPosition, 0, hitBoxRadius, healthPoints));
+        enemies.add(new Character(spawnPosition,hitBoxRadius, healthPoints));
     }
 
     private synchronized void moveEnemy(Character enemy, Point destination) {
         Point oldPosition = enemy.getPosition();
         double direction = angleBetweenPoints(oldPosition, destination);
-        Point newPosition = moveByDirection(oldPosition, direction, ENEMY_VELOCITY);
+        Point newPosition = moveByDirection(oldPosition, direction, enemy.getVelocity());
         if (!isCollisionObstacle(newPosition, enemy.getHitBoxRadius()))
             enemy.setPosition(newPosition);
     }
@@ -135,8 +141,10 @@ public class GameModel {
 
     public boolean isEnemyHit(Shape hitBox) {
         for (Bullet bullet : bullets)
-            if (isIntersects(getHitBoxShape(bullet.getPosition(), bullet.getHitBoxRadius()), hitBox))
+            if (isIntersects(getHitBoxShape(bullet.getPosition(), bullet.getHitBoxRadius()), hitBox)) {
+                bullets.remove(bullet);
                 return true;
+            }
         return false;
     }
 

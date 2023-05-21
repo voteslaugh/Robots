@@ -1,17 +1,26 @@
 package robot.windows.components.world;
 
 public class Weapon {
-    private boolean isReady;
+    private final int damage;
+    private final double reloadTime;
+    private long elapsedTimeAfterShoot;
 
-    public Weapon() {
-        this.isReady = true;
+    public Weapon(int damage, double reloadTime) {
+        this.damage = damage;
+        this.reloadTime = reloadTime;
+        elapsedTimeAfterShoot = System.currentTimeMillis();
     }
 
     public boolean isReady() {
-        return isReady;
+        long curr = System.currentTimeMillis();
+        if (curr - elapsedTimeAfterShoot >= reloadTime * 1000) {
+            elapsedTimeAfterShoot = curr;
+            return true;
+        }
+        return false;
     }
 
-    public void setReady(boolean ready) {
-        isReady = ready;
+    public int getDamage() {
+        return damage;
     }
 }

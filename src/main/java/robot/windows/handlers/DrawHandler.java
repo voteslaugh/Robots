@@ -58,6 +58,7 @@ public class DrawHandler extends JPanel {
             fillCircle(g, posX + hitBoxRadius / 4, posY, 5);
             g.setColor(Color.BLACK);
             drawCircle(g, posX + hitBoxRadius / 4, posY, 5);
+            drawHPBar(g, enemy, posX - hitBoxRadius / 2, posY - hitBoxRadius / 2 - 10);
         }
     }
 
@@ -66,10 +67,13 @@ public class DrawHandler extends JPanel {
         int posX = player.getPosition().x;
         int posY = player.getPosition().y;
         int hitBoxRadius = player.getHitBoxRadius();
+
         g.setColor(Color.GREEN);
         g.fillRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
         g.setColor(Color.BLACK);
         g.drawRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
+
+        drawHPBar(g, player, posX - hitBoxRadius / 2, posY - hitBoxRadius / 2 - 10);
     }
 
     public void drawObstacles(Graphics2D g, HashSet<Shape> obstacles) {
@@ -90,4 +94,27 @@ public class DrawHandler extends JPanel {
             drawCircle(g, posX, posY, 5);
         }
     }
+
+    public void drawHPBar(Graphics g, Character character, int posX, int posY) {
+        int maxHP = character.getMaxHealthPoints();
+        int currentHP = character.getHealthPoints();
+        int barWidth = character.getHitBoxRadius();
+        int greenWidth = (int) ((double) currentHP / maxHP * barWidth);
+        int redWidth = barWidth - greenWidth;
+        g.setColor(Color.GREEN);
+        g.fillRect(posX, posY, greenWidth, 5);
+        g.setColor(Color.RED);
+        g.fillRect(posX + greenWidth, posY, redWidth, 5);
+    }
+
+    public void drawScore(Graphics g, int score) {
+        g.setColor(Color.darkGray);
+        g.setFont(new Font("Arial", Font.BOLD, 24));
+        String text = "Убито: " + score;
+        int textWidth = g.getFontMetrics().stringWidth(text);
+        int x = textWidth + 10;
+        int y = getHeight() - 20;
+        g.drawString(text, x, y);
+    }
+
 }

@@ -24,8 +24,8 @@ public class GameController {
         gameVisualizer.addKeyListener(keyboardHandler);
         gameVisualizer.addMouseListener(mouseHandler);
         gameVisualizer.addMouseMotionListener(mouseHandler);
-        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets);
-        threadPool = Executors.newScheduledThreadPool(4);
+        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets, gameModel.score);
+        threadPool = Executors.newScheduledThreadPool(3);
         setUpThreads();
     }
 
@@ -41,16 +41,17 @@ public class GameController {
     }
 
     private void handleMouseAction() {
-        if (mouseHandler.isLMBPressed())
+        if (mouseHandler.isLMBPressed() && gameModel.player.getWeapon().isReady())
             gameModel.shoot(mouseHandler.getPosition());
     }
 
     private void handleKeyboardAction() {
         Point oldPosition = gameModel.player.getPosition();
-        Point newPosition = getNewPlayerPosition(oldPosition, gameModel.PLAYER_VELOCITY);
+        Point newPosition = getNewPlayerPosition(oldPosition, gameModel.player.getVelocity());
         if (!gameModel.isCollisionObstacle(newPosition, gameModel.player.getHitBoxRadius())) {
             gameModel.setPlayerPosition(newPosition);
         }
+        gameModel.player.setWeapon(keyboardHandler.getWeaponIndex());
     }
 
     public Point getNewPlayerPosition(Point position, double velocity) {
@@ -70,7 +71,7 @@ public class GameController {
     }
 
     public void repaint() {
-        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets);
+        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets, gameModel.score);
         gameVisualizer.repaint();
     }
 

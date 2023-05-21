@@ -5,15 +5,25 @@ import java.awt.geom.Rectangle2D;
 
 public class Character {
     private Point position;
-    private volatile double direction;
     private final int hitBoxRadius;
-    public int healthPoints;
+    private final int maxHealthPoints;
+    private int healthPoints;
+    protected final double velocity;
 
-    public Character(Point position, double direction, int hitBoxRadius, int healthPoints) {
+    public Character(Point position, int hitBoxRadius, int healthPoints) {
         this.position = position;
-        this.direction = direction;
         this.hitBoxRadius = hitBoxRadius;
         this.healthPoints = healthPoints;
+        this.maxHealthPoints = healthPoints;
+        this.velocity = computeVelocity(hitBoxRadius);
+    }
+
+    public Character(Point position, double velocity, int hitBoxRadius, int healthPoints) {
+        this.position = position;
+        this.hitBoxRadius = hitBoxRadius;
+        this.healthPoints = healthPoints;
+        this.maxHealthPoints = healthPoints;
+        this.velocity = velocity;
     }
 
     public Shape getHitBox() {
@@ -33,11 +43,31 @@ public class Character {
         return position;
     }
 
-    public void setDirection(double direction) {
-        this.direction = direction;
+    public double getVelocity() {
+        return velocity;
     }
 
-    public double getDirection() {
-        return direction;
+    public int getHealthPoints() {
+        return healthPoints;
     }
+
+    public boolean reduceHPAndCheckDeath(int damage) {
+        healthPoints -= damage;
+        return healthPoints <= 0;
+    }
+
+    public int getMaxHealthPoints() {
+        return maxHealthPoints;
+    }
+
+    private double computeVelocity(int hitBoxRadius) {
+        if (hitBoxRadius <= 50)
+            return 4;
+        else if (hitBoxRadius <= 100)
+            return 3;
+        else
+            return 2;
+
+    }
+
 }

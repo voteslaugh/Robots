@@ -9,6 +9,7 @@ public class KeyboardHandler extends KeyAdapter {
     private boolean downPressed = false;
     private boolean leftPressed = false;
     private boolean rightPressed = false;
+    private int weaponIndex = 0;
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -17,6 +18,8 @@ public class KeyboardHandler extends KeyAdapter {
             case KeyEvent.VK_A -> leftPressed = true;
             case KeyEvent.VK_S -> downPressed = true;
             case KeyEvent.VK_D -> rightPressed = true;
+            case KeyEvent.VK_1 -> weaponIndex = 0;
+            case KeyEvent.VK_2 -> weaponIndex = 1;
         }
     }
 
@@ -44,5 +47,9 @@ public class KeyboardHandler extends KeyAdapter {
 
     public boolean isRightPressed() {
         return rightPressed;
+    }
+
+    public int getWeaponIndex() {
+        return weaponIndex;
     }
 }

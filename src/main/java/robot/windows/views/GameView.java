@@ -15,12 +15,14 @@ public class GameView extends DrawHandler {
     private Set<Character> enemies;
     private HashSet<Shape> obstacles;
     private Set<Bullet> bullets;
+    private int score;
 
-    public void setPaintings(Character player, Set<Character> enemies, HashSet<Shape> obstacles, Set<Bullet> bullets) {
+    public void setPaintings(Character player, Set<Character> enemies, HashSet<Shape> obstacles, Set<Bullet> bullets, int score) {
         this.player = player;
         this.enemies = enemies;
         this.obstacles = obstacles;
         this.bullets = bullets;
+        this.score = score;
     }
 
     @Override
@@ -29,7 +31,6 @@ public class GameView extends DrawHandler {
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform t = new AffineTransform();
         t.translate(player.getPosition().x, player.getPosition().y);
-        t.rotate(player.getDirection());
         t.scale(zoomLevel, zoomLevel);
         t.translate(-player.getPosition().x, -player.getPosition().y);
         g2d.setTransform(t);
@@ -37,6 +38,8 @@ public class GameView extends DrawHandler {
         drawPlayer(g2d, player);
         drawObstacles(g2d, obstacles);
         drawBullets(g2d, bullets);
+        g2d.setTransform(new AffineTransform());
+        drawScore(g2d, score);
     }
 
 }
