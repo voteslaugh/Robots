@@ -115,7 +115,10 @@ public class GameModel {
                 }
             }
             if (isIntersects(enemy.getHitBox(), player.getHitBox())) {
-                player.reduceHPAndCheckDeath(20);
+                if (player.reduceHPAndCheckDeath(20)) {
+                    player.setHealthPoints(player.getMaxHealthPoints());
+                    score = 0;
+                }
             }
             else
                 moveEnemy(enemy, destination);

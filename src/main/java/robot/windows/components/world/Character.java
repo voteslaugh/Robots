@@ -39,6 +39,10 @@ public class Character {
         this.position = position;
     }
 
+    public void setHealthPoints(int healthPoints) {
+        this.healthPoints = healthPoints;
+    }
+
     public Point getPosition() {
         return position;
     }
