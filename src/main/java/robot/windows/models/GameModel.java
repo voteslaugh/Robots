@@ -26,7 +26,7 @@ public class GameModel {
     public int score;
 
     public GameModel() {
-        player = new Player(new Point(390, 254), 4, 20, 1000, new Weapon(10, 0.05), new Weapon(100, 0.5));
+        player = new Player(new Point(390, 254), 4, 20, 10000, new Weapon(10, 0.1), new Weapon(500, 0.8));
         modelObservers = new PropertyChangeSupport(this);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
@@ -54,9 +54,9 @@ public class GameModel {
 
     public void setUpEnemies() {
         enemies.addAll(List.of(
-                new Character(new Point(840, 200), 60, 500),
-                new Character(new Point(840, 600), 30, 300),
-                new Character(new Point(560, 600), 10, 100)
+                new Character(new Point(840, 200), 100, 200),
+                new Character(new Point(840, 600), 30, 60),
+                new Character(new Point(560, 600), 10, 20)
         ));
     }
 
@@ -64,8 +64,8 @@ public class GameModel {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                int random = RandomHandler.getRandomWithStep(20, 150);
-                spawnEnemy(random, random);
+                int random = RandomHandler.getRandomInRange(20, 150);
+                spawnEnemy(random, random * 2);
             }
         }, 0, 3000);
     }
