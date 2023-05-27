@@ -2,6 +2,8 @@ package robot.windows.handlers;
 
 import robot.windows.components.world.Bullet;
 import robot.windows.components.world.Character;
+import robot.windows.components.world.Enemy;
+import robot.windows.components.world.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,7 +47,7 @@ public class DrawHandler extends JPanel {
         g.drawArc(centerX - diameter / 2, centerY - diameter / 2, diameter, diameter, 0, 360);
     }
 
-    public void drawEnemies(Graphics2D g, Set<Character> enemies) {
+    public void drawEnemies(Graphics2D g, Set<Enemy> enemies) {
         for (Character enemy : enemies) {
             int posX = enemy.getPosition().x;
             int posY = enemy.getPosition().y;
@@ -63,7 +65,7 @@ public class DrawHandler extends JPanel {
     }
 
 
-    public void drawPlayer(Graphics2D g, Character player) {
+    public void drawPlayer(Graphics2D g, Player player) {
         int posX = player.getPosition().x;
         int posY = player.getPosition().y;
         int hitBoxRadius = player.getHitBoxRadius();

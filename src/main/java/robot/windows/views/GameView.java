@@ -1,5 +1,7 @@
 package robot.windows.views;
 
+import robot.windows.components.world.Enemy;
+import robot.windows.components.world.Player;
 import robot.windows.handlers.DrawHandler;
 import robot.windows.components.world.Bullet;
 import robot.windows.components.world.Character;
@@ -11,13 +13,13 @@ import java.util.Set;
 
 public class GameView extends DrawHandler {
 
-    private Character player;
-    private Set<Character> enemies;
+    private Player player;
+    private Set<Enemy> enemies;
     private HashSet<Shape> obstacles;
     private Set<Bullet> bullets;
     private int score;
 
-    public void setPaintings(Character player, Set<Character> enemies, HashSet<Shape> obstacles, Set<Bullet> bullets, int score) {
+    public void setPaintings(Player player, Set<Enemy> enemies, HashSet<Shape> obstacles, Set<Bullet> bullets, int score) {
         this.player = player;
         this.enemies = enemies;
         this.obstacles = obstacles;

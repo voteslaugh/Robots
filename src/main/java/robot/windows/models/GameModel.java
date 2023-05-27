@@ -2,10 +2,7 @@ package robot.windows.models;
 
 import org.ini4j.Ini;
 import org.ini4j.Profile;
-import robot.windows.components.world.Bullet;
-import robot.windows.components.world.Character;
-import robot.windows.components.world.Player;
-import robot.windows.components.world.Weapon;
+import robot.windows.components.world.*;
 import robot.windows.handlers.RandomHandler;
 
 import java.awt.*;
@@ -21,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameModel {
 
     public Player player;
-    public Set<Character> enemies;
+    public Set<Enemy> enemies;
     public HashSet<Shape> obstacles;
     public Set<Bullet> bullets;
     public final PropertyChangeSupport modelObservers;
@@ -68,9 +65,9 @@ public class GameModel {
 
     public void setUpEnemies() {
         enemies.addAll(List.of(
-                new Character(new Point(840, 200), 100, 200),
-                new Character(new Point(840, 600), 30, 60),
-                new Character(new Point(560, 600), 10, 20)
+                new Enemy(new Point(840, 200), 100, 200),
+                new Enemy(new Point(840, 600), 30, 60),
+                new Enemy(new Point(560, 600), 10, 20)
         ));
     }
 
@@ -117,11 +114,11 @@ public class GameModel {
     }
 
     private synchronized void moveEnemiesToPlayer() {
-        Iterator<Character> enemyIterator = enemies.iterator();
+        Iterator<Enemy> enemyIterator = enemies.iterator();
         LinkedList<Integer> oldDistances = getDistancesToEnemies();
         while (enemyIterator.hasNext()) {
-            Character enemy = enemyIterator.next();
-            if(isEnemyDied(enemy)) {
+            Enemy enemy = enemyIterator.next();
+            if(enemy.reduceHPAndCheckDeath(getDamageToEnemy(enemy.getHitBox()))) {
                 enemyIterator.remove();
                 score += 1;
             }
@@ -130,14 +127,17 @@ public class GameModel {
         modelObservers.firePropertyChange("enemyDistance", oldDistances, getDistancesToEnemies());
     }
 
-    private boolean isEnemyDied(Character enemy) {
-        if (isEnemyHit(enemy.getHitBox())) {
-            return enemy.reduceHPAndCheckDeath(player.getWeapon().getDamage());
-        }
-        return false;
+    public int getDamageToEnemy(Shape hitBox) {
+        int damage = 0;
+        for (Bullet bullet : bullets)
+            if (isIntersects(getHitBoxShape(bullet.getPosition(), bullet.getHitBoxRadius()), hitBox)) {
+                damage += bullet.getDamage();
+                bullets.remove(bullet);
+            }
+        return damage;
     }
 
-    private void handlePlayerReached(Player player, Character enemy) {
+    private void handlePlayerReached(Player player, Enemy enemy) {
         if (isIntersects(enemy.getHitBox(), player.getHitBox())) {
             if (player.reduceHPAndCheckDeath(ENEMY_DAMAGE)) {
                 player.setHealthPoints(player.getMaxHealthPoints());
@@ -149,10 +149,10 @@ public class GameModel {
     }
 
     public void spawnEnemy(int hitBoxRadius, int healthPoints) {
-        enemies.add(new Character(spawnPosition,hitBoxRadius, healthPoints));
+        enemies.add(new Enemy(spawnPosition,hitBoxRadius, healthPoints));
     }
 
-    private synchronized void moveEnemy(Character enemy, Point destination) {
+    private synchronized void moveEnemy(Enemy enemy, Point destination) {
         Point oldPosition = enemy.getPosition();
         double direction = angleBetweenPoints(oldPosition, destination);
         Point newPosition = moveByDirection(oldPosition, direction, enemy.getVelocity());
@@ -161,16 +161,7 @@ public class GameModel {
     }
 
     public void shoot(Point destination) {
-        bullets.add(new Bullet(player.getPosition(), destination));
-    }
-
-    public boolean isEnemyHit(Shape hitBox) {
-        for (Bullet bullet : bullets)
-            if (isIntersects(getHitBoxShape(bullet.getPosition(), bullet.getHitBoxRadius()), hitBox)) {
-                bullets.remove(bullet);
-                return true;
-            }
-        return false;
+        bullets.add(new Bullet(player.getPosition(), destination, player.getWeapon().getDamage()));
     }
 
     private synchronized void moveBullets() {
@@ -187,7 +178,7 @@ public class GameModel {
 
     public synchronized LinkedList<Integer> getDistancesToEnemies() {
         LinkedList<Integer> positions = new LinkedList<>();
-        for (Character enemy : enemies) {
+        for (Enemy enemy : enemies) {
             positions.add((int) player.getPosition().distance(enemy.getPosition()));
         }
         return positions;

@@ -4,18 +4,17 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class Character {
-    private Point position;
-    private final int hitBoxRadius;
-    private final int maxHealthPoints;
-    private int healthPoints;
-    protected final double velocity;
+    protected Point position;
+    protected final int hitBoxRadius;
+    protected final int maxHealthPoints;
+    protected int healthPoints;
+    protected double velocity;
 
     public Character(Point position, int hitBoxRadius, int healthPoints) {
         this.position = position;
         this.hitBoxRadius = hitBoxRadius;
         this.healthPoints = healthPoints;
         this.maxHealthPoints = healthPoints;
-        this.velocity = computeVelocity(hitBoxRadius);
     }
 
     public Character(Point position, double velocity, int hitBoxRadius, int healthPoints) {
@@ -62,16 +61,6 @@ public class Character {
 
     public int getMaxHealthPoints() {
         return maxHealthPoints;
-    }
-
-    private double computeVelocity(int hitBoxRadius) {
-        if (hitBoxRadius <= 50)
-            return 4;
-        else if (hitBoxRadius <= 100)
-            return 3;
-        else
-            return 2;
-
     }
 
 }

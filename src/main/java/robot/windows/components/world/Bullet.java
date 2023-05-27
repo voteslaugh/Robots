@@ -9,12 +9,14 @@ public class Bullet {
     private final double direction;
     private final int hitBoxRadius;
 
-    public Bullet(Point start, Point destination) {
+    private final int damage;
+
+    public Bullet(Point start, Point destination, int damage) {
         this.position = start;
         this.direction = GameModel.angleBetweenPoints(start, destination);
         this.hitBoxRadius = 1;
+        this.damage = damage;
     }
-
     public void setPosition(Point position) {
         this.position = position;
     }
@@ -29,5 +31,9 @@ public class Bullet {
 
     public int getHitBoxRadius() {
         return hitBoxRadius;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 }
