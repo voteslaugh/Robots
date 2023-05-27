@@ -1,5 +1,7 @@
 package robot.windows.models;
 
+import org.ini4j.Ini;
+import org.ini4j.Profile;
 import robot.windows.components.world.Bullet;
 import robot.windows.components.world.Character;
 import robot.windows.components.world.Player;
@@ -10,6 +12,8 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,20 +25,30 @@ public class GameModel {
     public HashSet<Shape> obstacles;
     public Set<Bullet> bullets;
     public final PropertyChangeSupport modelObservers;
-    public final double BULLET_VELOCITY = 6;
+    public double BULLET_VELOCITY = 6;
+    private int ENEMY_DAMAGE;
     private final Point spawnPosition = new Point(794, 86);
     public int score;
 
     public GameModel() {
-        player = new Player(new Point(390, 254), 4, 20, 10000, new Weapon(10, 0.1), new Weapon(500, 0.8));
         modelObservers = new PropertyChangeSupport(this);
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
-        setUpEnemies();
         obstacles = new HashSet<>();
-        score = 0;
+        setUpEnemies();
         setUpObstacles();
-        setUpSpawn();
+        try {
+            Profile.Section modelSection = new Ini(new File("config.ini")).get("model");
+            setUpSpawn(modelSection.get("enemy.minHP", Integer.class), modelSection.get("enemy.maxHP", Integer.class));
+            BULLET_VELOCITY = modelSection.get("bullet.velocity", Integer.class);
+            ENEMY_DAMAGE = modelSection.get("enemy.damage", Integer.class);
+            player = new Player(new Point(390, 254), modelSection.get("player.velocity", Integer.class), 20,
+                    modelSection.get("player.HP", Integer.class),
+                    new Weapon(10, 0.1), new Weapon(500, 0.8));
+            score = 0;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setUpObstacles() {
@@ -60,11 +74,11 @@ public class GameModel {
         ));
     }
 
-    public void setUpSpawn() {
+    public void setUpSpawn(int minHP, int maxHP) {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                int random = RandomHandler.getRandomInRange(20, 150);
+                int random = RandomHandler.getRandomInRange(minHP, maxHP);
                 spawnEnemy(random, random * 2);
             }
         }, 0, 3000);
@@ -103,27 +117,35 @@ public class GameModel {
     }
 
     private synchronized void moveEnemiesToPlayer() {
-        Point destination = player.getPosition();
-        Iterator<Character> iterator = enemies.iterator();
+        Iterator<Character> enemyIterator = enemies.iterator();
         LinkedList<Integer> oldDistances = getDistancesToEnemies();
-        while (iterator.hasNext()) {
-            Character enemy = iterator.next();
-            if (isEnemyHit(enemy.getHitBox())) {
-                if(enemy.reduceHPAndCheckDeath(player.getWeapon().getDamage())) {
-                    iterator.remove();
-                    score += 1;
-                }
+        while (enemyIterator.hasNext()) {
+            Character enemy = enemyIterator.next();
+            if(isEnemyDied(enemy)) {
+                enemyIterator.remove();
+                score += 1;
             }
-            if (isIntersects(enemy.getHitBox(), player.getHitBox())) {
-                if (player.reduceHPAndCheckDeath(20)) {
-                    player.setHealthPoints(player.getMaxHealthPoints());
-                    score = 0;
-                }
-            }
-            else
-                moveEnemy(enemy, destination);
+            handlePlayerReached(player, enemy);
         }
         modelObservers.firePropertyChange("enemyDistance", oldDistances, getDistancesToEnemies());
+    }
+
+    private boolean isEnemyDied(Character enemy) {
+        if (isEnemyHit(enemy.getHitBox())) {
+            return enemy.reduceHPAndCheckDeath(player.getWeapon().getDamage());
+        }
+        return false;
+    }
+
+    private void handlePlayerReached(Player player, Character enemy) {
+        if (isIntersects(enemy.getHitBox(), player.getHitBox())) {
+            if (player.reduceHPAndCheckDeath(ENEMY_DAMAGE)) {
+                player.setHealthPoints(player.getMaxHealthPoints());
+                score = 0;
+            }
+        }
+        else
+            moveEnemy(enemy, player.getPosition());
     }
 
     public void spawnEnemy(int hitBoxRadius, int healthPoints) {
