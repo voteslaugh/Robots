@@ -22,8 +22,8 @@ public class Field {
         setUpEasy();
         setUpHard();
         setUpMedium();
-        scoreToMedium = configHandler.getInt("model", "level.score.medium");
-        scoreToHard = configHandler.getInt("model", "level.score.hard");
+        scoreToMedium = ConfigHandler.getInt("model", "level.score.medium");
+        scoreToHard = ConfigHandler.getInt("model", "level.score.hard");
     }
 
     private HashSet<Shape> getBorders() {
@@ -44,7 +44,7 @@ public class Field {
                 new Enemy(new Point(560, 600), 10, 20)
         );
 
-        easy = new Level(enemies, spawn, getBorders(), configHandler.getInt("model", "enemy.easy.minHP"), configHandler.getInt("model", "enemy.easy.maxHP"), configHandler.getInt("model", "enemy.easy.damage"));
+        easy = new Level(enemies, spawn, getBorders(), ConfigHandler.getInt("model", "enemy.easy.minHP"), ConfigHandler.getInt("model", "enemy.easy.maxHP"), ConfigHandler.getInt("model", "enemy.easy.damage"));
 
         easy.obstacles.add(new Rectangle2D.Double(150, 150, 50, 500));
         easy.obstacles.add(new Rectangle2D.Double(150, 150, 500, 50));
@@ -65,7 +65,7 @@ public class Field {
                 new Enemy(new Point(840, 600), 30, 60)
         ));
 
-        medium = new Level(enemies, spawn, getBorders(), configHandler.getInt("model", "enemy.easy.minHP"), configHandler.getInt("model", "enemy.easy.maxHP"), configHandler.getInt("model", "enemy.easy.damage"));
+        medium = new Level(enemies, spawn, getBorders(), ConfigHandler.getInt("model", "enemy.easy.minHP"), ConfigHandler.getInt("model", "enemy.easy.maxHP"), ConfigHandler.getInt("model", "enemy.easy.damage"));
 
         medium.obstacles.add(new Rectangle2D.Double(600, 150, 50, 500));
 
@@ -79,7 +79,7 @@ public class Field {
                 new Enemy(new Point(200, 300), 50, 100)
         );
 
-        hard = new Level(enemies, spawn, getBorders(), configHandler.getInt("model", "enemy.hard.minHP"), configHandler.getInt("model", "enemy.hard.maxHP"), configHandler.getInt("model", "enemy.hard.damage"));
+        hard = new Level(enemies, spawn, getBorders(), ConfigHandler.getInt("model", "enemy.hard.minHP"), ConfigHandler.getInt("model", "enemy.hard.maxHP"), ConfigHandler.getInt("model", "enemy.hard.damage"));
     }
 
     public Level getEasy() {

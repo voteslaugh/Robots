@@ -1,5 +1,7 @@
 package robot.windows.controllers;
 
+import robot.windows.handlers.BackgroundMusicHandler;
+import robot.windows.handlers.ConfigHandler;
 import robot.windows.handlers.KeyboardHandler;
 import robot.windows.handlers.MouseHandler;
 import robot.windows.models.GameModel;
@@ -11,12 +13,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class GameController {
+    private final BackgroundMusicHandler musicHandler = new BackgroundMusicHandler(ConfigHandler.getString("controller", "path.music"));
     private final GameModel gameModel;
     private final GameView gameVisualizer;
     private final ScheduledExecutorService threadPool;
     private final KeyboardHandler keyboardHandler;
     private final MouseHandler mouseHandler;
     public GameController() {
+        musicHandler.play();
         this.gameModel = new GameModel();
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();

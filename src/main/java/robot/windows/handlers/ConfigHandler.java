@@ -6,9 +6,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class ConfigHandler {
-    File config = new File("config.ini");
+    final static File config = new File("config.ini");
 
-    public String getString(String section, String key) {
+    public static String getString(String section, String key) {
         try {
             return new Ini(config).get(section).get(key, String.class);
         } catch (IOException e) {
@@ -16,7 +16,7 @@ public class ConfigHandler {
         }
     }
 
-    public Integer getInt(String section, String key) {
+    public static Integer getInt(String section, String key) {
         try {
             return new Ini(config).get(section).get(key, Integer.class);
         } catch (IOException e) {

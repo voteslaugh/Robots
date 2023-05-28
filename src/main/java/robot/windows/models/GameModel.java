@@ -26,7 +26,6 @@ public class GameModel {
     public int score;
     Timer spawner = new Timer();
     TimerTask spawnerTask;
-    ConfigHandler configHandler = new ConfigHandler();
 
 
     public GameModel() {
@@ -35,9 +34,9 @@ public class GameModel {
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
         obstacles = new HashSet<>();
-        BULLET_VELOCITY = configHandler.getInt("model", "bullet.velocity");
-        player = new Player(startPosition, configHandler.getInt("model", "player.velocity"), 20,
-                configHandler.getInt("model", "player.HP"),
+        BULLET_VELOCITY = ConfigHandler.getInt("model", "bullet.velocity");
+        player = new Player(startPosition, ConfigHandler.getInt("model", "player.velocity"), 20,
+                ConfigHandler.getInt("model", "player.HP"),
                 new Weapon(10, 0.1), new Weapon(500, 0.8));
         setUpLevel(field.getEasy());
         score = 0;
