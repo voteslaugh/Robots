@@ -29,7 +29,7 @@ public class Drop implements Hitboxable{
     }
 
     private void computeType() {
-        switch (RandomHandler.getRandomInRange(0, 3)) {
+        switch (RandomHandler.getRandomInRange(0, 4)) {
             case 0 -> type = WorldObjectType.HEAL;
             case 1 -> type = WorldObjectType.SLOWDOWN;
             case 2 -> type = WorldObjectType.DAMAGE_INCREASE;

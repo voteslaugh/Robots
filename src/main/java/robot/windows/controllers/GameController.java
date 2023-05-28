@@ -61,7 +61,7 @@ public class GameController {
     public Point getNewPlayerPosition(Point position, double velocity) {
         int posX = position.x;
         int posY = position.y;
-        double effectedVelocity = velocity * gameModel.effect.speedBoost;
+        double effectedVelocity = velocity * gameModel.effect.curSpeedBoost;
         if (keyboardHandler.isUpPressed())
             posY -= effectedVelocity;
         if (keyboardHandler.isDownPressed())

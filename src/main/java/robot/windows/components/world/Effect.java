@@ -1,37 +1,47 @@
 package robot.windows.components.world;
 
+import robot.windows.handlers.ConfigHandler;
+
 public class Effect {
 
+    public int curDamageMultiply;
     public int damageMultiply;
+    public int curSpeedBoost;
     public int speedBoost;
+    public int curEnemySlowdown;
     public int enemySlowdown;
-    public long elapsedTimeEffect;
+    public long curElapsedTimeEffect;
+    public int cooldown;
 
     public Effect() {
+        cooldown = ConfigHandler.getInt("model", "drop.cooldown");
+        damageMultiply = ConfigHandler.getInt("model", "drop.damage.multiply");
+        speedBoost = ConfigHandler.getInt("model", "drop.speed.boost");
+        enemySlowdown = ConfigHandler.getInt("model", "drop.enemy.slowdown");
         reset();
     }
 
     private void reset() {
-        damageMultiply = 1;
-        speedBoost = 1;
-        enemySlowdown = 1;
+        curDamageMultiply = 1;
+        curSpeedBoost = 1;
+        curEnemySlowdown = 1;
     }
 
     public void handleEffectStatus() {
         long cur = System.currentTimeMillis();
-        if (cur - elapsedTimeEffect >= 3000) {
+        if (cur - curElapsedTimeEffect >= cooldown * 1000L) {
             reset();
-            elapsedTimeEffect = cur;
+            curElapsedTimeEffect = cur;
         }
     }
 
     public void startEffect(WorldObjectType type) {
-        elapsedTimeEffect = System.currentTimeMillis();
+        curElapsedTimeEffect = System.currentTimeMillis();
         reset();
         switch (type) {
-            case DAMAGE_INCREASE -> damageMultiply = 2;
-            case SLOWDOWN -> enemySlowdown = 2;
-            case SPEED_BOOST -> speedBoost = 2;
+            case DAMAGE_INCREASE -> curDamageMultiply = damageMultiply;
+            case SLOWDOWN -> curEnemySlowdown = enemySlowdown;
+            case SPEED_BOOST -> curSpeedBoost = speedBoost;
         }
     }
 }

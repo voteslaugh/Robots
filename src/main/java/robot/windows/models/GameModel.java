@@ -144,7 +144,7 @@ public class GameModel {
         int damage = 0;
         for (Bullet bullet : bullets)
             if (isIntersects(getHitBoxShape(bullet.getPosition(), bullet.getHitBoxRadius()), hitBox)) {
-                damage += bullet.getDamage() * effect.damageMultiply;
+                damage += bullet.getDamage() * effect.curDamageMultiply;
                 bullets.remove(bullet);
             }
         return damage;
@@ -170,7 +170,7 @@ public class GameModel {
     private synchronized void moveEnemy(Enemy enemy, Point destination) {
         Point oldPosition = enemy.getPosition();
         double direction = angleBetweenPoints(oldPosition, destination);
-        double velocity = enemy.getVelocity() / effect.enemySlowdown;
+        double velocity = enemy.getVelocity() / effect.curEnemySlowdown;
         Point newPos = getNewEnemyPosition(oldPosition, direction, velocity, enemy.getHitBoxRadius());
         enemy.setPosition(newPos);
     }
