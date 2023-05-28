@@ -3,12 +3,13 @@ package robot.windows.components.world;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class Character {
+public class Character implements Hitboxable {
     protected Point position;
     protected final int hitBoxRadius;
     protected final int maxHealthPoints;
     protected int healthPoints;
     protected double velocity;
+    protected WorldObjectType type;
 
     public Character(Point position, int hitBoxRadius, int healthPoints) {
         this.position = position;
@@ -30,7 +31,7 @@ public class Character {
         return new Rectangle2D.Double(position.x - offset, position.y - offset, hitBoxRadius, hitBoxRadius);
     }
 
-    public Integer getHitBoxRadius() {
+    public int getHitBoxRadius() {
         return hitBoxRadius;
     }
 
@@ -63,4 +64,7 @@ public class Character {
         return maxHealthPoints;
     }
 
+    public WorldObjectType getType() {
+        return type;
+    }
 }

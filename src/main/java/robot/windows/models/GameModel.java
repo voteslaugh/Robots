@@ -1,16 +1,13 @@
 package robot.windows.models;
 
-import org.ini4j.Ini;
-import org.ini4j.Profile;
 import robot.windows.components.world.*;
+import robot.windows.handlers.ConfigHandler;
 import robot.windows.handlers.RandomHandler;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,8 +19,8 @@ public class GameModel {
     public HashSet<Shape> obstacles;
     public Set<Bullet> bullets;
     public final PropertyChangeSupport modelObservers;
-    public double BULLET_VELOCITY = 6;
-    private int ENEMY_DAMAGE;
+    public double BULLET_VELOCITY;
+    private final int ENEMY_DAMAGE;
     private final Point spawnPosition = new Point(794, 86);
     public int score;
 
@@ -34,18 +31,14 @@ public class GameModel {
         obstacles = new HashSet<>();
         setUpEnemies();
         setUpObstacles();
-        try {
-            Profile.Section modelSection = new Ini(new File("config.ini")).get("model");
-            setUpSpawn(modelSection.get("enemy.minHP", Integer.class), modelSection.get("enemy.maxHP", Integer.class));
-            BULLET_VELOCITY = modelSection.get("bullet.velocity", Integer.class);
-            ENEMY_DAMAGE = modelSection.get("enemy.damage", Integer.class);
-            player = new Player(new Point(390, 254), modelSection.get("player.velocity", Integer.class), 20,
-                    modelSection.get("player.HP", Integer.class),
-                    new Weapon(10, 0.1), new Weapon(500, 0.8));
-            score = 0;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ConfigHandler configHandler = new ConfigHandler();
+        setUpSpawn(configHandler.getInt("model", "enemy.minHP"), configHandler.getInt("model", "enemy.maxHP"));
+        BULLET_VELOCITY = configHandler.getInt("model", "bullet.velocity");
+        ENEMY_DAMAGE = configHandler.getInt("model", "enemy.damage");
+        player = new Player(new Point(390, 254), configHandler.getInt("model", "player.velocity"), 20,
+                configHandler.getInt("model", "player.HP"),
+                new Weapon(10, 0.1), new Weapon(500, 0.8));
+        score = 0;
     }
 
     public void setUpObstacles() {

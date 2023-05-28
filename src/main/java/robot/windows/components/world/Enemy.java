@@ -5,16 +5,21 @@ import java.awt.*;
 public class Enemy extends Character{
     public Enemy(Point position, int hitBoxRadius, int healthPoints) {
         super(position, hitBoxRadius, healthPoints);
-        setUpVelocity();
+        setUpParams();
     }
 
-    private void setUpVelocity() {
-        if (hitBoxRadius <= 50)
+    private void setUpParams() {
+        if (hitBoxRadius <= 50) {
             velocity = 4;
-        else if (hitBoxRadius <= 100)
+            type = WorldObjectType.SMALL;
+        }
+        else if (hitBoxRadius <= 100) {
             velocity = 3;
-        else
+            type = WorldObjectType.MEDIUM;
+        }
+        else {
             velocity = 2;
-
+            type = WorldObjectType.BIG;
+        }
     }
 }

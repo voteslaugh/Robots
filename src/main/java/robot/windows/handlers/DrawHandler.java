@@ -1,23 +1,24 @@
 package robot.windows.handlers;
 
-import robot.windows.components.world.Bullet;
+import robot.windows.components.world.*;
 import robot.windows.components.world.Character;
-import robot.windows.components.world.Enemy;
-import robot.windows.components.world.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 
 public class DrawHandler extends JPanel {
 
     protected double zoomLevel;
+    private final ImageHandler imageHandler;
 
     public DrawHandler() {
         super(true);
+        imageHandler = new ImageHandler();
         setFocusable(true);
         zoomLevel = 1;
         addKeyListener(new KeyAdapter() {
@@ -48,34 +49,25 @@ public class DrawHandler extends JPanel {
     }
 
     public void drawEnemies(Graphics2D g, Set<Enemy> enemies) {
-        for (Character enemy : enemies) {
-            int posX = enemy.getPosition().x;
-            int posY = enemy.getPosition().y;
-            int hitBoxRadius = enemy.getHitBoxRadius();
-            g.setColor(Color.RED);
-            fillCircle(g, posX, posY, hitBoxRadius);
-            g.setColor(Color.BLACK);
-            drawCircle(g, posX, posY, hitBoxRadius);
-            g.setColor(Color.WHITE);
-            fillCircle(g, posX + hitBoxRadius / 4, posY, 5);
-            g.setColor(Color.BLACK);
-            drawCircle(g, posX + hitBoxRadius / 4, posY, 5);
-            drawHPBar(g, enemy, posX - hitBoxRadius / 2, posY - hitBoxRadius / 2 - 10);
+        for (Enemy enemy : enemies) {
+            drawCharacter(g, enemy);
         }
     }
 
-
     public void drawPlayer(Graphics2D g, Player player) {
-        int posX = player.getPosition().x;
-        int posY = player.getPosition().y;
-        int hitBoxRadius = player.getHitBoxRadius();
+        drawCharacter(g, player);
+    }
 
-        g.setColor(Color.GREEN);
-        g.fillRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
-        g.setColor(Color.BLACK);
-        g.drawRect(posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius);
+    private void drawHitBoxImage(Graphics2D g, int posX, int posY, int hitBoxRadius, BufferedImage bufferedImage) {
+        g.drawImage(bufferedImage, posX - hitBoxRadius / 2, posY - hitBoxRadius / 2, hitBoxRadius, hitBoxRadius, null);
+    }
 
-        drawHPBar(g, player, posX - hitBoxRadius / 2, posY - hitBoxRadius / 2 - 10);
+    private void drawCharacter(Graphics2D g, Character character) {
+        int posX = character.getPosition().x;
+        int posY = character.getPosition().y;
+        int hitBoxRadius = character.getHitBoxRadius();
+        drawHitBoxImage(g, posX, posY, hitBoxRadius, imageHandler.getImage(character.getType()));
+        drawHPBar(g, character, posX - hitBoxRadius / 2, posY - hitBoxRadius / 2 - 10);
     }
 
     public void drawObstacles(Graphics2D g, HashSet<Shape> obstacles) {
@@ -90,10 +82,8 @@ public class DrawHandler extends JPanel {
         for (Bullet bullet : bullets) {
             int posX = bullet.getPosition().x;
             int posY = bullet.getPosition().y;
-            g.setColor(Color.GREEN);
-            fillCircle(g, posX, posY, 5);
-            g.setColor(Color.BLACK);
-            drawCircle(g, posX, posY, 5);
+            int hitBoxRadius = bullet.getHitBoxRadius();
+            drawHitBoxImage(g, posX, posY, hitBoxRadius, imageHandler.getImage(bullet.getType()));
         }
     }
 
