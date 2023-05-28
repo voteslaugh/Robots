@@ -22,6 +22,7 @@ public class GameModel {
     public double BULLET_VELOCITY;
     private int enemyDamage;
     private Point spawnPosition;
+    private final Point startPosition = new Point(390, 254);
     public int score;
     Timer spawner = new Timer();
     TimerTask spawnerTask;
@@ -35,7 +36,7 @@ public class GameModel {
         enemies = ConcurrentHashMap.newKeySet();
         obstacles = new HashSet<>();
         BULLET_VELOCITY = configHandler.getInt("model", "bullet.velocity");
-        player = new Player(new Point(390, 254), configHandler.getInt("model", "player.velocity"), 20,
+        player = new Player(startPosition, configHandler.getInt("model", "player.velocity"), 20,
                 configHandler.getInt("model", "player.HP"),
                 new Weapon(10, 0.1), new Weapon(500, 0.8));
         setUpLevel(field.getEasy());
@@ -128,6 +129,7 @@ public class GameModel {
         if (isIntersects(enemy.getHitBox(), player.getHitBox())) {
             if (player.reduceHPAndCheckDeath(enemyDamage)) {
                 player.setHealthPoints(player.getMaxHealthPoints());
+                player.setPosition(startPosition);
                 setUpLevel(field.getEasy());
                 score = 0;
             }
@@ -143,9 +145,40 @@ public class GameModel {
     private synchronized void moveEnemy(Enemy enemy, Point destination) {
         Point oldPosition = enemy.getPosition();
         double direction = angleBetweenPoints(oldPosition, destination);
-        Point newPosition = moveByDirection(oldPosition, direction, enemy.getVelocity());
-        if (!isCollisionObstacle(newPosition, enemy.getHitBoxRadius()))
-            enemy.setPosition(newPosition);
+        double velocity = enemy.getVelocity();
+
+        enemy.setPosition(getNewEnemyPosition(oldPosition, direction, velocity, enemy.getHitBoxRadius()));
+    }
+
+    public static boolean isCollinear(Point p1, Point p2, Point p3) {
+        int area = (p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y));
+        return area == 0;
+    }
+
+    private Point getNewEnemyPosition(Point oldPosition, double direction, double velocity, int hitBoxRadius) {
+        Point newPosition = moveByDirection(oldPosition, direction, velocity);
+
+        if (isCollisionObstacle(newPosition, hitBoxRadius)) {
+            if (isCollinear(newPosition, oldPosition, player.getPosition()))
+                return oldPosition;
+            double angleStep = Math.PI / 8;
+            double maxAngle = Math.PI / 2;
+            for (double angle = angleStep; angle <= maxAngle; angle += angleStep) {
+                Point candidatePoint = moveByDirection(oldPosition, direction + angle, velocity);
+
+                if (!isCollisionObstacle(candidatePoint, hitBoxRadius)) {
+                    return candidatePoint;
+                }
+                candidatePoint = moveByDirection(oldPosition, direction - angle, velocity);
+
+                if (!isCollisionObstacle(candidatePoint, hitBoxRadius)) {
+                    return candidatePoint;
+                }
+            }
+        }
+        else
+            return newPosition;
+        return oldPosition;
     }
 
     public void shoot(Point destination) {

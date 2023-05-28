@@ -38,13 +38,11 @@ public class Field {
     }
 
     private void setUpEasy() {
-        Point spawn = new Point(794, 86);
+        Point spawn = new Point(794, 120);
         Set<Enemy> enemies = ConcurrentHashMap.newKeySet();
-        enemies.addAll(List.of(
-                new Enemy(new Point(840, 200), 100, 200),
-                new Enemy(new Point(840, 600), 30, 60),
+        enemies.add(
                 new Enemy(new Point(560, 600), 10, 20)
-        ));
+        );
 
         easy = new Level(enemies, spawn, getBorders(), configHandler.getInt("model", "enemy.easy.minHP"), configHandler.getInt("model", "enemy.easy.maxHP"), configHandler.getInt("model", "enemy.easy.damage"));
 
