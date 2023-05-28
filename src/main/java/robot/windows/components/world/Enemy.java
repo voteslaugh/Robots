@@ -11,15 +11,15 @@ public class Enemy extends Character{
     private void setUpParams() {
         if (hitBoxRadius <= 50) {
             velocity = 4;
-            type = WorldObjectType.SMALL;
+            type = WorldObjectType.SMALL_ENEMY;
         }
         else if (hitBoxRadius <= 100) {
             velocity = 3;
-            type = WorldObjectType.MEDIUM;
+            type = WorldObjectType.MEDIUM_ENEMY;
         }
         else {
             velocity = 2;
-            type = WorldObjectType.BIG;
+            type = WorldObjectType.BIG_ENEMY;
         }
     }
 }

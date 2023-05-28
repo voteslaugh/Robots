@@ -109,4 +109,13 @@ public class DrawHandler extends JPanel {
         g.drawString(text, x, y);
     }
 
+    public void drawDrops(Graphics2D g, Set<Drop> drops) {
+        for (Drop drop : drops) {
+            int posX = drop.getPosition().x;
+            int posY = drop.getPosition().y;
+            int hitBoxRadius = drop.getHitBoxRadius();
+            drawHitBoxImage(g, posX, posY, hitBoxRadius, imageHandler.getImage(drop.getType()));
+        }
+    }
+
 }

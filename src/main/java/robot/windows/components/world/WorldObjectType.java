@@ -1,9 +1,13 @@
 package robot.windows.components.world;
 
 public enum WorldObjectType {
-    SMALL,
-    MEDIUM,
-    BIG,
+    SMALL_ENEMY,
+    MEDIUM_ENEMY,
+    BIG_ENEMY,
     BULLET,
-    PLAYER
+    PLAYER,
+    SPEED_BOOST,
+    SLOWDOWN,
+    DAMAGE_INCREASE,
+    HEAL
 }

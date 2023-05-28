@@ -26,11 +26,13 @@ public class Character implements Hitboxable {
         this.velocity = velocity;
     }
 
-    public Shape getHitBox() {
+    @Override
+    public Rectangle2D getHitBox() {
         double offset = (double) hitBoxRadius / 2;
         return new Rectangle2D.Double(position.x - offset, position.y - offset, hitBoxRadius, hitBoxRadius);
     }
 
+    @Override
     public int getHitBoxRadius() {
         return hitBoxRadius;
     }

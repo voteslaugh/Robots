@@ -17,6 +17,7 @@ public class GameModel {
     public Player player;
     public Set<Enemy> enemies;
     public HashSet<Shape> obstacles;
+    public Set<Drop> drops;
     public Set<Bullet> bullets;
     public final PropertyChangeSupport modelObservers;
     public double BULLET_VELOCITY;
@@ -24,6 +25,7 @@ public class GameModel {
     private Point spawnPosition;
     private final Point startPosition = new Point(390, 254);
     public int score;
+    public Effect effect;
     Timer spawner = new Timer();
     TimerTask spawnerTask;
 
@@ -33,11 +35,13 @@ public class GameModel {
         field = new Field();
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
+        drops = ConcurrentHashMap.newKeySet();
         obstacles = new HashSet<>();
         BULLET_VELOCITY = ConfigHandler.getInt("model", "bullet.velocity");
         player = new Player(startPosition, ConfigHandler.getInt("model", "player.velocity"), 20,
                 ConfigHandler.getInt("model", "player.HP"),
                 new Weapon(10, 0.1), new Weapon(500, 0.8));
+        effect = new Effect();
         setUpLevel(field.getEasy());
         score = 0;
     }
@@ -71,6 +75,8 @@ public class GameModel {
     public void onModelUpdateEvent() {
         moveBullets();
         moveEnemiesToPlayer();
+        handleReachDrop();
+        effect.handleEffectStatus();
     }
 
     private synchronized Point moveByDirection(Point start, double direction, double velocity) {
@@ -102,8 +108,8 @@ public class GameModel {
         while (enemyIterator.hasNext()) {
             Enemy enemy = enemyIterator.next();
             if(enemy.reduceHPAndCheckDeath(getDamageToEnemy(enemy.getHitBox()))) {
+                handleEnemyDeath(enemy);
                 enemyIterator.remove();
-                score += 1;
                 if (score >= field.getScoreToHard())
                     setUpLevel(field.getHard());
                 else if(score >= field.getScoreToMedium())
@@ -114,11 +120,31 @@ public class GameModel {
         modelObservers.firePropertyChange("enemyDistance", oldDistances, getDistancesToEnemies());
     }
 
+    private void handleEnemyDeath(Enemy enemy) {
+        if (RandomHandler.getRandomInRange(0, 2) == 1)
+            drops.add(new Drop(enemy.getPosition()));
+        score += 1;
+    }
+
+    private void handleReachDrop() {
+        Rectangle2D playerHitBox = player.getHitBox();
+        for (Drop drop: drops) {
+            if (drop.getHitBox().intersects(playerHitBox)) {
+                switch (drop.getType()) {
+                    case HEAL -> player.setHealthPoints(Math.min(player.getHealthPoints() + ConfigHandler.getInt("model", "drop.heal"), player.getMaxHealthPoints()));
+                    default -> effect.startEffect(drop.getType());
+
+                }
+                drops.remove(drop);
+            }
+        }
+    }
+
     public int getDamageToEnemy(Shape hitBox) {
         int damage = 0;
         for (Bullet bullet : bullets)
             if (isIntersects(getHitBoxShape(bullet.getPosition(), bullet.getHitBoxRadius()), hitBox)) {
-                damage += bullet.getDamage();
+                damage += bullet.getDamage() * effect.damageMultiply;
                 bullets.remove(bullet);
             }
         return damage;
@@ -144,7 +170,7 @@ public class GameModel {
     private synchronized void moveEnemy(Enemy enemy, Point destination) {
         Point oldPosition = enemy.getPosition();
         double direction = angleBetweenPoints(oldPosition, destination);
-        double velocity = enemy.getVelocity();
+        double velocity = enemy.getVelocity() / effect.enemySlowdown;
 
         enemy.setPosition(getNewEnemyPosition(oldPosition, direction, velocity, enemy.getHitBoxRadius()));
     }

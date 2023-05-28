@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Field {
 
-    ConfigHandler configHandler = new ConfigHandler();
     private Level easy;
     private Level medium;
     private Level hard;

@@ -28,7 +28,7 @@ public class GameController {
         gameVisualizer.addKeyListener(keyboardHandler);
         gameVisualizer.addMouseListener(mouseHandler);
         gameVisualizer.addMouseMotionListener(mouseHandler);
-        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets, gameModel.score);
+        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets, gameModel.drops, gameModel.score);
         threadPool = Executors.newScheduledThreadPool(3);
         setUpThreads();
     }
@@ -61,21 +61,21 @@ public class GameController {
     public Point getNewPlayerPosition(Point position, double velocity) {
         int posX = position.x;
         int posY = position.y;
-
+        double effectedVelocity = velocity * gameModel.effect.speedBoost;
         if (keyboardHandler.isUpPressed())
-            posY -= velocity;
+            posY -= effectedVelocity;
         if (keyboardHandler.isDownPressed())
-            posY += velocity;
+            posY += effectedVelocity;
         if (keyboardHandler.isLeftPressed())
-            posX -= velocity;
+            posX -= effectedVelocity;
         if (keyboardHandler.isRightPressed())
-            posX += velocity;
+            posX += effectedVelocity;
 
         return new Point(posX, posY);
     }
 
     public void repaint() {
-        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets, gameModel.score);
+        gameVisualizer.setPaintings(gameModel.player, gameModel.enemies, gameModel.obstacles, gameModel.bullets, gameModel.drops, gameModel.score);
         gameVisualizer.repaint();
     }
 

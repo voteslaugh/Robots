@@ -1,10 +1,7 @@
 package robot.windows.views;
 
-import robot.windows.components.world.Enemy;
-import robot.windows.components.world.Player;
+import robot.windows.components.world.*;
 import robot.windows.handlers.DrawHandler;
-import robot.windows.components.world.Bullet;
-import robot.windows.components.world.Character;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -17,13 +14,15 @@ public class GameView extends DrawHandler {
     private Set<Enemy> enemies;
     private HashSet<Shape> obstacles;
     private Set<Bullet> bullets;
+    private Set<Drop> drops;
     private int score;
 
-    public void setPaintings(Player player, Set<Enemy> enemies, HashSet<Shape> obstacles, Set<Bullet> bullets, int score) {
+    public void setPaintings(Player player, Set<Enemy> enemies, HashSet<Shape> obstacles, Set<Bullet> bullets, Set<Drop> drops, int score) {
         this.player = player;
         this.enemies = enemies;
         this.obstacles = obstacles;
         this.bullets = bullets;
+        this.drops = drops;
         this.score = score;
     }
 
@@ -36,6 +35,7 @@ public class GameView extends DrawHandler {
         t.scale(zoomLevel, zoomLevel);
         t.translate(-player.getPosition().x, -player.getPosition().y);
         g2d.setTransform(t);
+        drawDrops(g2d, drops);
         drawEnemies(g2d, enemies);
         drawPlayer(g2d, player);
         drawObstacles(g2d, obstacles);
