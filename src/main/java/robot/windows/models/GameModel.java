@@ -9,10 +9,10 @@ import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameModel {
+    public Field field;
 
     public Player player;
     public Set<Enemy> enemies;
@@ -20,58 +20,48 @@ public class GameModel {
     public Set<Bullet> bullets;
     public final PropertyChangeSupport modelObservers;
     public double BULLET_VELOCITY;
-    private final int ENEMY_DAMAGE;
-    private final Point spawnPosition = new Point(794, 86);
+    private int enemyDamage;
+    private Point spawnPosition;
     public int score;
+    Timer spawner = new Timer();
+    TimerTask spawnerTask;
+    ConfigHandler configHandler = new ConfigHandler();
+
 
     public GameModel() {
         modelObservers = new PropertyChangeSupport(this);
+        field = new Field();
         bullets = ConcurrentHashMap.newKeySet();
         enemies = ConcurrentHashMap.newKeySet();
         obstacles = new HashSet<>();
-        setUpEnemies();
-        setUpObstacles();
-        ConfigHandler configHandler = new ConfigHandler();
-        setUpSpawn(configHandler.getInt("model", "enemy.minHP"), configHandler.getInt("model", "enemy.maxHP"));
         BULLET_VELOCITY = configHandler.getInt("model", "bullet.velocity");
-        ENEMY_DAMAGE = configHandler.getInt("model", "enemy.damage");
         player = new Player(new Point(390, 254), configHandler.getInt("model", "player.velocity"), 20,
                 configHandler.getInt("model", "player.HP"),
                 new Weapon(10, 0.1), new Weapon(500, 0.8));
+        setUpLevel(field.getEasy());
         score = 0;
     }
 
-    public void setUpObstacles() {
-        obstacles.add(new Rectangle2D.Double(0, 0, 900, 10));
-        obstacles.add(new Rectangle2D.Double(0, 0, 10, 900));
-        obstacles.add(new Rectangle2D.Double(0, 890, 900, 10));
-        obstacles.add(new Rectangle2D.Double(890, 0, 10, 900));
-
-        obstacles.add(new Rectangle2D.Double(150, 150, 50, 500));
-        obstacles.add(new Rectangle2D.Double(150, 150, 500, 50));
-        obstacles.add(new Rectangle2D.Double(600, 150, 50, 500));
-        obstacles.add(new Rectangle2D.Double(300, 300, 50, 300));
-        obstacles.add(new Rectangle2D.Double(450, 300, 50, 300));
-        obstacles.add(new Rectangle2D.Double(300, 300, 200, 50));
-        obstacles.add(new Rectangle2D.Double(300, 550, 200, 50));
-    }
-
-    public void setUpEnemies() {
-        enemies.addAll(List.of(
-                new Enemy(new Point(840, 200), 100, 200),
-                new Enemy(new Point(840, 600), 30, 60),
-                new Enemy(new Point(560, 600), 10, 20)
-        ));
+    private void setUpLevel(Level level) {
+        spawnPosition = level.spawn;
+        enemies = level.enemies;
+        obstacles = level.obstacles;
+        enemyDamage = level.enemyDamage;
+        setUpSpawn(level.minEnemyHP, level.maxEnemyHP);
     }
 
     public void setUpSpawn(int minHP, int maxHP) {
-        new Timer().schedule(new TimerTask() {
+        if (spawnerTask != null) {
+            spawnerTask.cancel();
+        }
+        spawnerTask = new TimerTask() {
             @Override
             public void run() {
                 int random = RandomHandler.getRandomInRange(minHP, maxHP);
                 spawnEnemy(random, random * 2);
             }
-        }, 0, 3000);
+        };
+        spawner.schedule(spawnerTask, 0, 3000);
     }
 
     public static double angleBetweenPoints(Point p1, Point p2) {
@@ -114,6 +104,10 @@ public class GameModel {
             if(enemy.reduceHPAndCheckDeath(getDamageToEnemy(enemy.getHitBox()))) {
                 enemyIterator.remove();
                 score += 1;
+                if (score >= field.getScoreToHard())
+                    setUpLevel(field.getHard());
+                else if(score >= field.getScoreToMedium())
+                    setUpLevel(field.getMedium());
             }
             handlePlayerReached(player, enemy);
         }
@@ -132,8 +126,9 @@ public class GameModel {
 
     private void handlePlayerReached(Player player, Enemy enemy) {
         if (isIntersects(enemy.getHitBox(), player.getHitBox())) {
-            if (player.reduceHPAndCheckDeath(ENEMY_DAMAGE)) {
+            if (player.reduceHPAndCheckDeath(enemyDamage)) {
                 player.setHealthPoints(player.getMaxHealthPoints());
+                setUpLevel(field.getEasy());
                 score = 0;
             }
         }
