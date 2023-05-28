@@ -7,6 +7,10 @@ public class Effect {
     public int enemySlowdown;
     public long elapsedTimeEffect;
 
+    public Effect() {
+        reset();
+    }
+
     private void reset() {
         damageMultiply = 1;
         speedBoost = 1;

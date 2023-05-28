@@ -171,8 +171,8 @@ public class GameModel {
         Point oldPosition = enemy.getPosition();
         double direction = angleBetweenPoints(oldPosition, destination);
         double velocity = enemy.getVelocity() / effect.enemySlowdown;
-
-        enemy.setPosition(getNewEnemyPosition(oldPosition, direction, velocity, enemy.getHitBoxRadius()));
+        Point newPos = getNewEnemyPosition(oldPosition, direction, velocity, enemy.getHitBoxRadius());
+        enemy.setPosition(newPos);
     }
 
     public static boolean isCollinear(Point p1, Point p2, Point p3) {
